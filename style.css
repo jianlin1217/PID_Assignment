@@ -1,0 +1,56 @@
+.wrapper
+{
+    display:grid;
+    grid-template-columns: repeat(3,2fr);
+    grid-column-gap: 30px;
+}
+.wrapper2
+{
+    display:grid;
+    grid-template-columns: repeat(2,2fr);
+    grid-column-gap: 30px;
+}
+div
+{
+    text-align: center;
+    height: 300px;
+}
+div.outline
+{
+    margin-top: 130px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+div.mid
+{
+    margin-top: 50%;
+}
+img#icon
+{
+    width: 50px;
+    height: 50px;
+}
+img
+{
+    width: 300px;
+    height: 300px;
+}
+button
+{
+    font-size: 50px;
+    margin-top: 30px;
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-bottom: 30px;
+}
+p
+{ 
+    font-size: 20px;
+    font-style: italic;
+    text-align: center;
+}
+p.total
+{
+    font-size: 60px;
+    font-style: italic;
+}

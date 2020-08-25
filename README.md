@@ -1,6 +1,6 @@
 # RD1_Assignment
 
-# 0825 v1.1 創立資料庫
+# 0825 v1.1 創立資料庫 13:30
 資料庫buy_System
 
 先暫定規劃8個資料表
@@ -52,14 +52,16 @@ customerAddress
 customerMail
 
 
-購物車	             1個資料表
+購物車	             
+1個資料表 shopCar
 buyCusId
 buyTotal
 buyCount
 buyItemId
 
 
-歷史清單	         1個資料表
+歷史清單	         
+1個資料表 hisList
 hisListId
 whoBuyId
 hisTotal
@@ -69,4 +71,7 @@ hisDate
 
 客戶清單           同註冊/登入資料表
 
-# 0825 v1.2 
+# 0825 v1.2    購物頁切版面 17:19
+未完成
+
+
