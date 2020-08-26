@@ -20,7 +20,8 @@ if($_SESSION['nowMemberId']!=null)
 $drinkName = array();
 $drinkPrice = array();
 $canBuy = 0;
-
+//總共商品有哪些
+global $totalItem;
 //取得飲料id  價格   名字  數量  
 $askCommend = <<<end
     select itemId,itemPrice,itemName,remainCount from itemList;
@@ -30,13 +31,14 @@ while ($row = mysqli_fetch_assoc($result)) {
     array_push($drinkName, $row['itemName']);
     array_push($drinkPrice, $row['itemPrice']);
 }
-//將品項金額放入
 $_SESSION['itemPrice']=$drinkPrice;
 $_SESSION['itemName']=$drinkName;
 
-//總共商品有哪些
-global $totalItem;
+//將品項金額放入
 $totalItem = count($drinkName);
+// var_dump($drinkName);
+// echo "<br>";
+// var_dump($drinkPrice);
 
 ?>
 <!DOCTYPE html>
@@ -50,7 +52,7 @@ $totalItem = count($drinkName);
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <title>熊蜂蜜－BearBees</title>
+    <title>熊蜂蜜－BearBees 購物車</title>
 </head>
 
 <body>

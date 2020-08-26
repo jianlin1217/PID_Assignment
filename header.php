@@ -5,13 +5,13 @@
             <!-- Links -->
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">商品介紹</a>
+                    <a class="nav-link" href="">商品介紹</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">商品選購</a>
+                    <a class="nav-link" href="product.php">商品選購</a>
                 </li>
                 <li class="nav-item" id="buyCar" style="display: none;">
-                    <a class="nav-link" href="#">購物車</a>
+                    <a class="nav-link" href="buycar.php">購物車</a>
                 </li>
                 <li class="nav-item" id="history" style="display: none;">
                     <a class="nav-link" href="#">歷史紀錄</a>
@@ -25,5 +25,6 @@
                     <a class="nav-link btn btn-success" style="color:black"  id="login" name="login"><?=$_SESSION['loginState']?></a>
                 </li>
             </ul>
+            
     
 </nav>

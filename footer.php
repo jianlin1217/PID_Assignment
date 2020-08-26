@@ -11,9 +11,10 @@
                     <p class="total all" style="font-size:30px" id="alltotal">總計:0</p>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " style="color:black" href="index.php">
-                        <img id="icon" src="img/BearIcon.jpg" alt="can't find picture">
+                    <a class="nav-link " style="color:black" id="addbuycar" href="">
+                        <img id="icon" src="img/buycar.jpg" alt="can't find picture">
                     </a>
                 </li>
             </ul>
     </nav>  
+    
