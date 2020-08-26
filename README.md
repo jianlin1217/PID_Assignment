@@ -106,3 +106,62 @@ php迴圈產生每個金額、數量、總額的id不同
 資料庫商品圖片未儲存
 
 
+-- phpMyAdmin SQL Dump
+-- version 4.9.3
+-- https://www.phpmyadmin.net/
+--
+-- 主機： localhost:8889
+-- 產生時間： 2020 年 08 月 26 日 09:52
+-- 伺服器版本： 5.7.26
+-- PHP 版本： 7.4.2
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- 資料庫： `buy_System`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `customerList`
+--
+
+CREATE TABLE `customerList` (
+  `customerId` int(11) NOT NULL,
+  `customerName` varchar(20) DEFAULT NULL,
+  `customerAccount` varchar(15) DEFAULT NULL,
+  `customerPassword` varchar(16) DEFAULT NULL,
+  `customerPhone` char(10) DEFAULT NULL,
+  `customerAddress` varchar(60) DEFAULT NULL,
+  `customerMail` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 傾印資料表的資料 `customerList`
+--
+
+INSERT INTO `customerList` (`customerId`, `customerName`, `customerAccount`, `customerPassword`, `customerPhone`, `customerAddress`, `customerMail`) VALUES
+(1, '熊仔', 'Bear0826', 'Bearpwd0826', '0978312465', '台中西屯區', 'Bear0826@gamil.com'),
+(5, 'BrownBear', 'BBear1217', 'Bear1217', '0958285961', '', 'BBear1217@gmail.com');
+
+--
+-- 已傾印資料表的索引
+--
+
+--
+-- 資料表索引 `customerList`
+--
+ALTER TABLE `customerList`
+  ADD PRIMARY KEY (`customerId`);
+
+--
+-- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
+--
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `customerList`
+--
+ALTER TABLE `customerList`
+  MODIFY `customerId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
