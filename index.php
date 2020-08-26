@@ -1,6 +1,27 @@
 <?php
     session_start();
-    $_SESSION['itemNum']=0;
+    //連接資料庫
+    require_once("connectDB.php");
+    //存放用SESSION
+    $drinkName=array();
+    $drinkPrice=array();
+    $canBuy=0;
+    global $totalItem;
+    //取得飲料id  價格   名字  數量  
+    $askCommend=<<<end
+    select itemId,itemPrice,itemName,remainCount from itemList;
+    end;
+    $result=mysqli_query($link,$askCommend);
+    while($row=mysqli_fetch_assoc($result))
+    {
+        array_push($drinkName,$row['itemName']);
+        array_push($drinkPrice,$row['itemPrice']);
+    }
+    $totalItem=count($drinkName);
+    // var_dump($drinkName);
+    // echo "<br>";
+    // var_dump($drinkPrice);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,19 +34,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <title>熊蜂蜜－沁涼飲</title>
+    <title>熊蜂蜜－BearBees</title>
 </head>
 
 <body>
     <?php
     require_once("header.php");
-    for ($i = 1; $i < 5; $i++) {
+    for ($i = 0; $i < $totalItem; $i++) {
     ?>
         <div class="wrapper outline">
             <div class="wrapper2" id="d1">
                 <img src="img/bubbleTea.jpg" alt="找不到圖片ＱＡＯ">
                 <div class="mid">
-                    <p>珍珠奶茶(BubbleTea)</p><p id="price<?=$i?>" name="price">60</p>
+                    <p><?=$drinkName[$i]?></p><p id="price<?=$i?>" name="price"><?=$drinkPrice[$i]?></p>
                     
                 </div>
             </div>
@@ -42,7 +63,7 @@
             </div>
             <div class="wrapper2" id="d3">
                 <div style="margin-top: 40%;">
-                    <p class="total">總額為：</p>
+                    <p class="total">小計：</p>
                 </div>
                 <div style="margin-top: 40%;">
                     <p class="total" id="totalm<?=$i?>" name="totalm">0</p>
@@ -52,14 +73,19 @@
         </div>
     <?php
     }
+    ?>
+    <?php
     require_once("footer.php")
     ?>
     <script>
+            //增加數量
             $("button[name='btnadd']").click(function(){
+                let alltotal=0;
                 let count;
                 let nowid=$(this).attr("id").replace("btnadd","");
                 
                 // alert(nowid);
+                //存放每個操作的id
                 item="#itemcount"+nowid;
                 total="#totalm"+nowid;
                 price="#price"+nowid;
@@ -69,13 +95,22 @@
                 count++;
                 $(item).text(count);
                 $(total).text($(price).text()*count);
+
+                for(i=0;i< <?=$totalItem?>;i++)
+                {
+                    alltotal+=Number($("#totalm"+i).text());
+                }
+                $("#alltotal").text("總計:"+alltotal);
                 
             })
+            //減少數量
             $("button[name='btnsub']").click(function(){
+                let alltotal=0;
                 let count;
                 let nowid=$(this).attr("id").replace("btnsub","");
                 
                 // alert(nowid);
+                //存放每個操作的id
                 item="#itemcount"+nowid;
                 total="#totalm"+nowid;
                 price="#price"+nowid;
@@ -86,7 +121,12 @@
                 count--;
                 $(item).text(count);
                 $(total).text($(price).text()*count);
-                
+
+                for(i=0;i< <?=$totalItem?>;i++)
+                {
+                    alltotal+=Number($("#totalm"+i).text());
+                }
+                $("#alltotal").text("總計:"+alltotal);
             })
 
     </script>
