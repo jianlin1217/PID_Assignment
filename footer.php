@@ -7,13 +7,22 @@
                 
             </ul>
             <ul class="navbar-nav">
+                <li class="nav-item">
+                    <input style="font-size:30px; display: none; position:relative" type="text" id="pickdate">
+                </li>
                 <li class="nav-item mr-auto" >
-                    <p class="total all" style="font-size:30px" id="alltotal">總計:0</p>
+                    <p class="total all" type="" style="font-size:30px; display: none; position:relative" id="alltotalN">總計: </p>
+                </li>
+                <li class="nav-item mr-auto" >
+                    <p class="total all" type="" style="font-size:30px; display: none; position:relative" id="alltotal">0</p>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " style="color:black" id="addbuycar" href="">
-                        <img id="icon" src="img/buycar.jpg" alt="can't find picture">
-                    </a>
+                    <form action="" method="post">
+                        <a class="nav-link " style="color:black" id="addbuycar" href="">
+                            <img style="display: none;" id="icon" src="img/buycar.jpg" alt="can't find picture">
+                        </a>
+                    </form>
+                  
                 </li>
             </ul>
     </nav>  

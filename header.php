@@ -5,7 +5,7 @@
             <!-- Links -->
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="">商品介紹</a>
+                    <a class="nav-link" href="index.php">商品介紹</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="product.php">商品選購</a>
@@ -14,11 +14,12 @@
                     <a class="nav-link" href="buycar.php">購物車</a>
                 </li>
                 <li class="nav-item" id="history" style="display: none;">
-                    <a class="nav-link" href="#">歷史紀錄</a>
+                    <a class="nav-link" href="history.php">歷史紀錄</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
-                <p class="nav-item " id="welcome">
+                <img src="img/BearIcon.jpg" style="height: 60px; width:60px" alt="找不到圖片ＱＡＯ">
+                <p class="nav-item " style="text-align:center ;margin-top:15px;" id="welcome">
 
                 </p>
                 <li class="nav-item ">

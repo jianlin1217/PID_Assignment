@@ -2,8 +2,6 @@
     session_start();
     //讀取資料庫的顧客資料
     require_once("connectDB.php");
-    $_SESSION['NowLogin'];     //現在登入的是誰
-    $_SESSION['nowMemberId'];  //現在登入的id
     $_SESSION['cAccount']=Array();     //資料庫中有的使用者名稱
     $_SESSION['cPass']=Array();     //資料庫中有的使用者密碼
     $_SESSION['cId']=Array();       //資料庫存的使用者編號
@@ -62,6 +60,17 @@
 </head>
 
 <body>
+    <?php
+      //檢測是不是還沒登入  非登入狀態則返回登入頁
+      if ($_SESSION['nowMemberId'] == null&&$_SESSION['linkTo']==1) {
+    ?>
+    <script>
+      alert("請先登入以便選購！！");
+    </script>
+    <?php
+      $_SESSION['linkTo']=0;
+      }
+    ?>
 <div class="container">
     <h1>熊蜂蜜-登入</h1>
     <form method="post" >

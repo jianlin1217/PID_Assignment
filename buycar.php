@@ -2,15 +2,6 @@
 session_start();
 //連接資料庫
 require_once("connectDB.php");
-//存放用SESSION
-$_SESSION['loginState']="登入";     //登入登出鈕
-$_SESSION['loginFlag']="false";     //判斷是不是登入以顯示購物車以及歷史明細
-$_SESSION['itemCount']=array();     //儲存對應的商品數量
-$_SESSION['itemPrice']=array();     //儲存商品的金額
-$_SESSION['itemName']=array();      //儲存商品的名稱
-$_SESSION['total'];                 //儲存總金額
-
-
 if($_SESSION['nowMemberId']!=null)
 {
     $_SESSION['loginState']="登出";
@@ -19,26 +10,34 @@ if($_SESSION['nowMemberId']!=null)
 //
 $drinkName = array();
 $drinkPrice = array();
-$canBuy = 0;
+$nowId = $_SESSION['nowMemberId'];
 //總共商品有哪些
 global $totalItem;
-//取得飲料id  價格   名字  數量  
-$askCommend = <<<end
-    select itemId,itemPrice,itemName,remainCount from itemList;
-    end;
-$result = mysqli_query($link, $askCommend);
-while ($row = mysqli_fetch_assoc($result)) {
-    array_push($drinkName, $row['itemName']);
-    array_push($drinkPrice, $row['itemPrice']);
+//取得飲料  價格   名字    
+$getItemDB=<<<end
+select * from shopCar where buyCusId=$nowId;
+end;
+$result=mysqli_query($link,$getItemDB);
+while($row=mysqli_fetch_assoc($result))
+{
+    array_push($drinkName,$row['buyName']);
+    array_push($drinkPrice,$row['buyPrice']);
 }
-$_SESSION['itemPrice']=$drinkPrice;
-$_SESSION['itemName']=$drinkName;
-
 //將品項金額放入
 $totalItem = count($drinkName);
-// var_dump($drinkName);
-// echo "<br>";
-// var_dump($drinkPrice);
+
+//刪除購物車品項
+for ($i = 0; $i < $totalItem; $i++) {
+    $temp="delete$i";
+    if(isset($_POST[$temp]))
+    {
+        $deleteItemDB=<<<end
+            delete from shopCar where buyCusId=$nowId and buyName="$drinkName[$i]";
+        end;
+        // echo $deleteItemDB;
+        mysqli_query($link,$deleteItemDB);
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -80,14 +79,20 @@ $totalItem = count($drinkName);
                     <button class="btn btn-danger" id="btnsub<?= $i ?>" name="btnsub"> - </button>
                 </div>
             </div>
-            <div class="wrapper2" id="d3">
+            <div class="wrapper" id="d3">
                 <div style="margin-top: 40%;">
                     <p class="total">小計：</p>
                 </div>
+                <!--總額-->
                 <div style="margin-top: 40%;">
                     <p class="total" id="totalm<?= $i ?>" name="totalm">0</p>
                 </div>
-
+                <!--刪除按鈕-->
+                <div style="margin-top: 60%;">
+                    <form action="" method="post">
+                        <button style="width:60px; height:60px;" name="delete<?=$i?>" id="delete<?=$i?>" type="text" class="btn btn-secondary" >X</button>
+                    </form>   
+                </div>
             </div>
         </div>
     <?php
@@ -97,6 +102,14 @@ $totalItem = count($drinkName);
     require_once("footer.php")
     ?>
     <script>
+        //清除歷史避免重複送出表單
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        //顯示總計和購物車圖示
+        $("#alltotal").show();
+        $("#alltotalN").show();
+        $("#icon").show();
         //增加數量
         $("button[name='btnadd']").click(function() {
             let alltotal = 0;
@@ -118,7 +131,7 @@ $totalItem = count($drinkName);
             for (i = 0; i < <?= $totalItem ?>; i++) {
                 alltotal += Number($("#totalm" + i).text());
             }
-            $("#alltotal").text("總計:" + alltotal);
+            $("#alltotal").text(alltotal);
 
         })
         //減少數量
@@ -144,7 +157,7 @@ $totalItem = count($drinkName);
                 alltotal += Number($("#totalm" + i).text());
             }
             
-            $("#alltotal").text("總計:" + alltotal);
+            $("#alltotal").text(alltotal);
         })
         //叫出登入畫面
         $("#login").click(function() {
@@ -173,15 +186,11 @@ $totalItem = count($drinkName);
 
         //購物車明細顯示
         $("#addbuycar").click(function(){
-           for(j=0;j< <?=$totalItem?>;j++) 
-            {
-                let putcount="itemcount"+j;
-                // alert(putcount);
-                // alert($("#"+putcount).text());
-                array_push($_SESSION['itemCount']);
-            }
-           location.href="buycar.php";
+            alert("送出訂單！");
+            alert("金額為"+$("#alltotal").val());
+            location.reload();
         })
+
 
     </script>
 </body>
