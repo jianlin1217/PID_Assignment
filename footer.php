@@ -19,7 +19,7 @@
                 <li class="nav-item">
                     <form action="" method="post">
                         <a class="nav-link " style="color:black" id="addbuycar" href="">
-                            <img style="display: none;" id="icon" src="img/buycar.jpg" alt="can't find picture">
+                            <button style="display: none; margin-top:20px; width:50px; height:50px; font-size:small" class="btn btn-success" name="buyorder" id="icon" alt="can't find picture">買</button>
                         </a>
                     </form>
                   
