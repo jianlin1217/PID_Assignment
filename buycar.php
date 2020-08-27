@@ -38,19 +38,23 @@ for ($i = 0; $i < $totalItem; $i++) {
         mysqli_query($link,$deleteItemDB);
     }
 }
-//將購物車訂單送出
-if(isset($_POST['buyorder']))
-{
-    var_dump($_POST['itemcount1']);
-    echo "送出訂單 <br>".$_POST['itemcount1'];
-    for($j=0;$j<$totalItem;$j++)
-    {
-         $number="itemcount$j";
-         echo $number."<br>";
-         echo $_POST[$number];
-         echo "*<br>";
-    }
-}
+// if(isset($_POST))
+// {
+//     var_dump($_POST);
+// }
+// //將購物車訂單送出
+// if(isset($_POST['buyorder']))
+// {
+//     var_dump($_POST['itemcount1']);
+//     echo "送出訂單 <br>".$_POST['itemcount1'];
+//     for($j=0;$j<$totalItem;$j++)
+//     {
+//          $number="itemcount$j";
+//          echo $number."<br>";
+//          echo $_POST[$number];
+//          echo "*<br>";
+//     }
+// }
 
 ?>
 <!DOCTYPE html>
@@ -68,6 +72,7 @@ if(isset($_POST['buyorder']))
 </head>
 
 <body>
+
     <?php
     // require_once("header.php");
     for ($i = 0; $i < $totalItem; $i++) {
@@ -85,10 +90,9 @@ if(isset($_POST['buyorder']))
                 <div class="mid">
                     <button class="btn btn-success" id="btnadd<?=$i?>" name="btnadd"> + </button>
                 </div> 
+                
                     <div style="margin-top: 80%;">
-                    <form method="post">
-                        <input style="width: 40px;" disabled="disabled" type="text" id="itemcount<?=$i?>" name="itemcount<?=$i?>" value="0">
-                    </form>
+                        <p  type="text" id="itemcount<?=$i?>" name="itemcount<?=$i?>">0</p>
                     </div>
                 <div class="mid">
                     <button class="btn btn-danger"  id="btnsub<?=$i?>"  name="btnsub"> - </button>
@@ -116,6 +120,8 @@ if(isset($_POST['buyorder']))
     <?php
     require_once("footer.php")
     ?>
+
+
     <script>
         //清除歷史避免重複送出表單
         if (window.history.replaceState) {
@@ -138,16 +144,15 @@ if(isset($_POST['buyorder']))
             price = "#price" + nowid;
             // alert(item);
 
-            count = $(item).val();
+            count = $(item).text();
             count++;
-            $(item).val(count);
+            $(item).text(count);
             $(total).text($(price).text() * count);
 
             for (i = 0; i < <?= $totalItem ?>; i++) {
                 alltotal += Number($("#totalm" + i).text());
             }
             $("#alltotal").text(alltotal);
-
         })
         //減少數量
         $("button[name='btnsub']").click(function() {
@@ -162,10 +167,10 @@ if(isset($_POST['buyorder']))
             price = "#price" + nowid;
             // alert(item);
             //個別的數量＊金額
-            count = $(item).val();
+            count = $(item).text();
             if (count > 0)
                 count--;
-            $(item).val(count);
+            $(item).text(count);
             $(total).text($(price).text() * count);
             //計算全部數量的錢
             for (i = 0; i < <?= $totalItem ?>; i++) {
@@ -198,6 +203,32 @@ if(isset($_POST['buyorder']))
         <?php
             }
         ?>
+        
+
+        //存數量 金額 總額
+        $("#icon").click(function(){
+            let  countA=[];
+            let  priceA=[];
+            let  total=0;
+            for(let i=0;i< <?= $totalItem?>;i++)
+            {
+                countA.push(Number($("#itemcount"+i).text()));
+                priceA.push(Number($("#price"+i).text()));
+            }
+
+                alert("???");
+
+            total=$("#alltotal").text();
+            $.ajax({
+                url:"get.php",
+                type:"POST",
+                data:{countA:countA,priceA:priceA,total:total},
+                error:function(){alert("錯誤");},
+                success:function(){}
+            });
+            location.href="index.php";
+        })
+
 
 
     </script>
