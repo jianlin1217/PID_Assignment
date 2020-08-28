@@ -15,7 +15,19 @@
                     <p class="total all" type="" style="font-size:30px; display: none; position:relative" id="alltotal">0</p>
                 </li>
                 <li class="nav-item">
-                     <button style="display: none; margin-top:20px; width:50px; height:50px; font-size:small" class="btn btn-success" name="buyorder"  id="icon" alt="can't find picture">買</button>
+                    <form action="" method="post">
+                        <button style="display: none; margin-top:20px; width:70px; height:50px; font-size:small" class="btn btn-success" name="buyorder"  id="icon" alt="can't find picture">結帳</button>
+                        <input type="text" name="btotal" id="btotal" style="display: none;">
+                        <?php
+                                for($h=0;$h<$totalItem;$h++)
+                                {
+                        ?>
+                                <input type="text" name="bcount<?=$h?>" id="bcount<?=$h?>" style="display: none;">
+                                <input type="text" name="bname<?=$h?>" id="bname<?=$h?>" style="display: none;">
+                        <?php
+                                }
+                        ?>
+                    </form>
                 </li>
             </ul>
     </nav>  

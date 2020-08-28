@@ -7,24 +7,38 @@ if($_SESSION['nowMemberId']!=null)
     $_SESSION['loginState']="登出";
     $_SESSION['loginFlag']="true";
 }
-//
+//取得飲料id  價格 名字
+$drinkId = array();
 $drinkName = array();
 $drinkPrice = array();
 $nowId = $_SESSION['nowMemberId'];
 //總共商品有哪些
 global $totalItem;
-//取得飲料  價格   名字    
-$getItemDB=<<<end
-select * from shopCar where buyCusId=$nowId;
+//從資料庫取得 飲料id  價格   名字    
+$getBuyDB=<<<end
+select buyItemId from shopCar where buyCusId=$nowId;
 end;
-$result=mysqli_query($link,$getItemDB);
+$result=mysqli_query($link,$getBuyDB);
 while($row=mysqli_fetch_assoc($result))
 {
-    array_push($drinkName,$row['buyName']);
-    array_push($drinkPrice,$row['buyPrice']);
+    array_push($drinkId,$row['buyItemId']);
 }
-//將品項金額放入
-$totalItem = count($drinkName);
+// var_dump($drinkId);
+//將品項數量放入
+$totalItem = count($drinkId);
+
+for($i=0;$i<$totalItem;$i++)
+{
+    $getItemDB=<<<end
+    select itemName,itemPrice,remainCount from itemList where itemId=$drinkId[$i]
+    end;
+    $result=mysqli_query($link,$getItemDB);
+    $row=mysqli_fetch_assoc($result);
+    array_push($drinkName,$row['itemName']);
+    array_push($drinkPrice,$row['itemPrice']);
+    // echo $drinkName[$i]."  ".$drinkPrice[$i];
+}
+
 
 //刪除購物車品項
 for ($i = 0; $i < $totalItem; $i++) {
@@ -37,6 +51,35 @@ for ($i = 0; $i < $totalItem; $i++) {
         // echo $deleteItemDB;
         mysqli_query($link,$deleteItemDB);
     }
+}
+
+if(isset($_POST['buyorder']))
+{
+    $orderIcount=array();
+    $orderIName=array();
+    $orderTotal;
+    for($j=0;$j< $totalItem;$j++)
+    {
+        $temp="bcount$j";
+        $temp2="bname$j";
+        //數量為零的不放入結算
+        if($_POST[$temp]!=0)
+        {
+            array_push($orderIcount,$_POST[$temp]);
+            array_push($orderIName,$_POST[$temp2]); 
+            
+        }
+       
+    }
+    $orderTotal=$_POST['btotal'];
+
+    //將訂單放到訂單明細資料庫
+
+    //將訂單存到訂單資料庫
+
+    
+
+
 }
 // if(isset($_POST))
 // {
@@ -82,7 +125,7 @@ for ($i = 0; $i < $totalItem; $i++) {
             <div class="wrapper2" id="d1">
                 <img src="img/bubbleTea.jpg" alt="找不到圖片ＱＡＯ">
                 <div class="mid">
-                    <p><?= $drinkName[$i] ?></p>
+                    <p id="name<?= $i ?>" name="dname"><?= $drinkName[$i] ?></p>
                     <p id="price<?= $i ?>" name="price"><?= $drinkPrice[$i] ?></p>
                 </div>
             </div>
@@ -207,26 +250,29 @@ for ($i = 0; $i < $totalItem; $i++) {
 
         //存數量 金額 總額
         $("#icon").click(function(){
-            let  countA=[];
-            let  priceA=[];
             let  total=0;
             for(let i=0;i< <?= $totalItem?>;i++)
             {
-                countA.push(Number($("#itemcount"+i).text()));
-                priceA.push(Number($("#price"+i).text()));
+                $("#bcount"+i).val(Number($("#itemcount"+i).text()));
+                $("#bname"+i).val($("#name"+i).text());
             }
-
-                alert("???");
-
+            //將input值改變再送到ＳＥＳＳＩＯＮ中
             total=$("#alltotal").text();
-            $.ajax({
-                url:"get.php",
-                type:"POST",
-                data:{countA:countA,priceA:priceA,total:total},
-                error:function(){alert("錯誤");},
-                success:function(){}
-            });
-            location.href="index.php";
+            $("#btotal").val(total);
+
+
+            //ajax傳送  
+            
+            // $.ajax({
+            //     url:"get.php",
+            //     type:"POST",
+            //     data:{countA:countA,priceA:priceA,total:total},
+            //     error:function(){alert("錯誤");},
+            //     success:function(){}
+            // });
+           
+            // alert($("#test").text());
+            // location.href="index.php";
         })
 
 

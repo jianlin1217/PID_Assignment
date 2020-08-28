@@ -113,25 +113,21 @@
     </form>
 </div>
 <?php
+//登入
 if(isset($_POST['Login']))
     {
-        // echo "1234";
-        // echo $_POST['act'].".........".$_POST['pwd'];
         for($i=0;$i<count($compareAccount);$i++)
         {
             if($compareAccount[$i]==$_POST['act']&&$comparePass[$i]==$_POST['pwd'])
             {
-                // echo "123";
                 $_SESSION['nowMemberId']=$compareId[$i];
                 $askName=<<<end
                 select customerName from customerList where customerAccount ="$compareAccount[$i]"
                 end;
                 $row=mysqli_fetch_assoc(mysqli_query($link,$askName));
                 $_SESSION['NowLogin']=$row['customerName'];
-                // echo $_SESSION['nowMemberId']."*****";
                 header("location: index.php");
             }
-            //  echo $compareAccount[$i] ."--".$comparePass[$i]."<br>";
         }
         ?>
         <script>

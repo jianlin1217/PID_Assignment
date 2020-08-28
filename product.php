@@ -5,6 +5,7 @@ require_once("connectDB.php");
 //選購者添加到購物車的品項
 $_SESSION['wBuyItem'] = array();
 $_SESSION['wItemPrice'] = array();
+$_SESSION['wItemId']=array();
 //判定是不是導向過去登入畫面
 $_SESSION['linkTo']=0;
 
@@ -16,6 +17,7 @@ if ($_SESSION['nowMemberId'] != null) {
 $nowId = $_SESSION['nowMemberId'];
 
 //取得飲料id  價格   名字  數量 
+$drinkId = array();
 $drinkName = array();
 $drinkPrice = array();
 $askCommend = <<<end
@@ -23,6 +25,7 @@ $askCommend = <<<end
     end;
 $result = mysqli_query($link, $askCommend);
 while ($row = mysqli_fetch_assoc($result)) {
+    array_push($drinkId, $row['itemId']);
     array_push($drinkName, $row['itemName']);
     array_push($drinkPrice, $row['itemPrice']);
 }
@@ -37,15 +40,17 @@ for ($i = 0; $i < $totalItem; $i++) {
         //確認無重複擺放品項
         $flag=true;
         $buysameDB=<<<end
-        select buyName from shopCar where buyCusId = $nowId;
+        select buyItemId from shopCar where buyCusId = $nowId;
         end;
         $result=mysqli_query($link,$buysameDB);
         while($row=mysqli_fetch_assoc($result))
         {
-            if($row['buyName']==$drinkName[$i])
+            if($row['buyItemId']==$drinkId[$i])
             {
                 $flag=false;
+                // echo "same:".$drinkId[$i]."  ";
             }
+            
         }
         if($flag)
         {
@@ -53,9 +58,9 @@ for ($i = 0; $i < $totalItem; $i++) {
             //將品項擺到購物車中
             $buycarDB = <<<end
             insert into shopCar
-            (buyCusId,buyPrice,buyName)
+            (buyCusId,buyItemId)
             values
-            ($nowId,$drinkPrice[$i],"$drinkName[$i]");
+            ($nowId,$drinkId[$i]);
             end;
             // echo $buycarDB;
             mysqli_query($link,$buycarDB);
