@@ -136,7 +136,7 @@ if(isset($_POST['buyorder']))
     insert into hisList
     (hisListId,whoBuyId,hisToatl,hisItemCount,hisDate)
     values
-    ($nowOrder,$nowId,$orderTotal,$orderTotalCount,"2020-08-28 10:20:43");
+    ($nowOrder,$nowId,$orderTotal,$orderTotalCount,"$nowDate");
     end;
     mysqli_query($link,$putHisDB);
     // echo $putHisDB;

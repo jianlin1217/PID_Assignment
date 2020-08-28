@@ -4,12 +4,13 @@
      //現在登入的人
      $_SESSION['memberAccount']=null;
 
-    echo "12346",$txtlogin=$_POST['act'];;
-     if(isset($_POST['btlogin']))
+    // echo "12346",$txtlogin=$_POST['act'];;
+    // $_POST['btnlogin']=1;
+     if(isset($_POST['btnlogin']))
      {
             $txtlogin=$_POST['act'];
             $txtloginpwd=$_POST['pwd'];
-            echo $txtlogin . " " . $txtloginpwd;
+            echo $txtlogin . " 123 " . $txtloginpwd;
             $_SESSION['memberAccount']=$txtlogin;
             // header("location: system.php");
      }
@@ -37,28 +38,34 @@
 
                 <!-- Modal content-->
                 <form action="" method="post">
-                        <div class="modal-content">
+                    <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" style="color:#1708e4">熊蜂蜜管理系統-登入</h4>
+                            <h4 class="modal-title" style="color:#1708e4">BearBees 熊蜂蜜管理系統-登入</h4>
                         </div>
                             <div class="modal-body">
                                 <p>帳號</p>
-                                <input style="width: 250px;" id="act" name="act" type="text">
+                                <input style="width: 250px;" id="act" name="act" type="text" class="form-control" >
                             </div>
                             <div class="modal-body">
                                 <p>密碼</p>
-                                <input  style="width: 250px;" id="pwd" name="pwd" type="password">
+                                <input  style="width: 250px;" id="pwd" name="pwd" type="password" class="form-control" >
                             </div>
                         <div class="modal-footer">
-                            <button type="button"  id="btlogin" name="btlogin" class="btn btn-default" i data-dismiss="modal">登入</button>
+                            <button type="button"  id="btnlogin" name="btnlogin" class="btn btn-primary" >登入</button>
                             <!-- <button type="button" id="btnreg" name="btnreg" class="btn btn-default" i data-dismiss="modal">註冊</button> -->
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-
+        
     </div>
+    <script>
+        $("#btnlogin").click(function(){
+            // alert("QQ");
+            // location.href="system.php";
+        })
+    </script>
 </body>
 
 </html>

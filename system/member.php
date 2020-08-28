@@ -1,12 +1,3 @@
-<?php
-    session_start();
-    require_once("connectDB.php");
-    echo $_SESSION['memberAccount']." 156";
-    if($_POST['loginout'])
-    {
-        header("location: index.php");
-    }
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +11,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <title>BearBees -- 管理系統</title>
+    <title>BearBees -- 管理系統（員工）</title>
 </head>
 <body>
-    <?php require_once("header.php");?>
+    <?php
+        require_once("header.php");
+    ?>
 </body>
 </html>
