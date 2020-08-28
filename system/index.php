@@ -6,6 +6,10 @@
 
     // echo "12346",$txtlogin=$_POST['act'];;
     // $_POST['btnlogin']=1;
+    if(isset($_POST['btnlogin']))
+    {
+        echo "新增";
+    }
      if(isset($_POST['btnlogin']))
      {
             $txtlogin=$_POST['act'];
@@ -51,7 +55,7 @@
                                 <input  style="width: 250px;" id="pwd" name="pwd" type="password" class="form-control" >
                             </div>
                         <div class="modal-footer">
-                            <button type="button"  id="btnlogin" name="btnlogin" class="btn btn-primary" >登入</button>
+                            <button   id="btnlogin" name="btnlogin" class="btn btn-primary" >登入</button>
                             <!-- <button type="button" id="btnreg" name="btnreg" class="btn btn-default" i data-dismiss="modal">註冊</button> -->
                         </div>
                     </div>
@@ -60,12 +64,6 @@
         </div>
         
     </div>
-    <script>
-        $("#btnlogin").click(function(){
-            // alert("QQ");
-            // location.href="system.php";
-        })
-    </script>
 </body>
 
 </html>

@@ -12,7 +12,7 @@
                     <a class="nav-link"  href="../system/order.php">訂單管理</a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link"  href="../system/order.php">報表</a>
+                    <a class="nav-link"  href="../system/report.php">報表</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
