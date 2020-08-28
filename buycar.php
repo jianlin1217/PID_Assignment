@@ -146,7 +146,7 @@ if(isset($_POST['buyorder']))
     delete from shopCar where buyCusId=$nowId;
     end;
     mysqli_query($link,$deletecar);
-    header("location:product.php");
+    header("location:history.php");
 }
 ?>
 <!DOCTYPE html>
