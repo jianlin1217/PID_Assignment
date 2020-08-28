@@ -99,31 +99,36 @@
         <?php
             }
         ?>
+        <form action="" method="post">
+            <button id="btnSend" name="btnSend" style="display: none; float:right">送出</button>
+        </form>
     </div>
-    <button id="btnSend" name="btnSend" style="display: none ;">送出</button>
+    
 </body>
 <script>
+    
+
     let flag=true;
     $("#btnMod").click(function(){
         
         //讓管理者可以修改
-        if(flag)
+        if(flag==true)
         {
-            $flag=false;
+            flag=false;
             $("input[name='pName']").attr("disabled",false);
             $("input[name='price']").attr("disabled",false);
             $("input[name='remain']").attr("disabled",false);
             $("textarea[name='textF']").attr("disabled",false);
-            $("#btnSend").hide();
+            document.getElementById("btnSend").style.display="block";
         }   
         else
         {
-            $flag=true;
-            $("input[name='pName']").attr("disabled");
-            $("input[name='price']").attr("disabled");
-            $("input[name='remain']").attr("disabled");
-            $("textarea[name='textF']").attr("disabled");
-            $("#btnSend").show();
+            flag=true;
+            $("input[name='pName']").attr("disabled",true);
+            $("input[name='price']").attr("disabled",true);
+            $("input[name='remain']").attr("disabled",true);
+            $("textarea[name='textF']").attr("disabled",true);
+            document.getElementById("btnSend").style.display="none";
         }
     })
 </script>
