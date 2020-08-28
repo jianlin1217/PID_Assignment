@@ -45,8 +45,13 @@ for ($i = 0; $i < $totalItem; $i++) {
     $temp="delete$i";
     if(isset($_POST[$temp]))
     {
+        //取得商品ID
+        $getItemId=<<<end
+            select itemId from itemList where itemName="$drinkName[$i]";
+        end;
+        $pId=mysqli_fetch_assoc(mysqli_query($link,$getItemId))['itemId'];
         $deleteItemDB=<<<end
-            delete from shopCar where buyCusId=$nowId and buyName="$drinkName[$i]";
+            delete from shopCar where buyCusId=$nowId and buyItemId=$pId;
         end;
         // echo $deleteItemDB;
         mysqli_query($link,$deleteItemDB);
@@ -57,6 +62,7 @@ if(isset($_POST['buyorder']))
 {
     $orderIcount=array();
     $orderIName=array();
+    $orderIPrice=array();
     $orderTotal;
     for($j=0;$j< $totalItem;$j++)
     {
@@ -71,34 +77,77 @@ if(isset($_POST['buyorder']))
         }
        
     }
+    //訂單總額
     $orderTotal=$_POST['btotal'];
+    //取得商品價格
+    for($o=0;$o<count($orderIcount);$o++)
+    {
+        $getPrice=<<<end
+        select itemPrice from itemList where itemName = "$orderIName[$o]"
+        end;
+        $row=mysqli_fetch_assoc(mysqli_query($link,$getPrice));
+        $orderIPrice[$o]=intval($row['itemPrice']);
+    }
+    // var_dump($orderIPrice);
+    //現在時間
+    date_default_timezone_set("Asia/Taipei");
+    $nowDate = date("Y-m-d H:i:s");;
+    //計算總共商品數量
+    $orderTotalCount=0;
+    for($i=0;$i<count($orderIcount);$i++)
+    $orderTotalCount+=$orderIcount[$i];
+    //將訂單存到訂單資料庫
+    $putorderDB=<<<end
+    insert into orderList
+    (total,orderCusId,orderCount,orderDate)
+    values
+    ($orderTotal,$nowId,$orderTotalCount,"$nowDate");
+    end;
+    // echo $putorderDB;
+    mysqli_query($link,$putorderDB);
 
     //將訂單放到訂單明細資料庫
+    $getOrderId=<<<end
+    select orderId from orderList where orderCusId=$nowId;
+    end;
+    $result=mysqli_query($link,$getOrderId);
+    //因一個顧客可能有多筆訂單  取訂單編號最大的為現在的訂單
+    $allOrder=array();
+    while($row=mysqli_fetch_assoc($result))
+    {
+        array_push($allOrder,$row['orderId']);
+    }
+    $nowOrder=max($allOrder);
+    // echo $nowOrder;
+    //將訂單明細放到資料庫中
+    for($h=0;$h<count($orderIcount);$h++)
+    {
+        $putdetailDB=<<<end
+        insert into orderDetail
+        (orderId,itemPrice,itemName,itemCount)
+        values
+        ($nowOrder,$orderIPrice[$h],"$orderIName[$h]",$orderIcount[$h]);
+        end;
+        // echo $putdetailDB;
+        mysqli_query($link,$putdetailDB);
+    }
+    //新增到客戶歷史資料
+    $putHisDB=<<<end
+    insert into hisList
+    (hisListId,whoBuyId,hisToatl,hisItemCount,hisDate)
+    values
+    ($nowOrder,$nowId,$orderTotal,$orderTotalCount,"2020-08-28 10:20:43");
+    end;
+    mysqli_query($link,$putHisDB);
+    // echo $putHisDB;
 
-    //將訂單存到訂單資料庫
-
-    
-
-
+    //清空購物車
+    $deletecar=<<<end
+    delete from shopCar where buyCusId=$nowId;
+    end;
+    mysqli_query($link,$deletecar);
+    header("location:product.php");
 }
-// if(isset($_POST))
-// {
-//     var_dump($_POST);
-// }
-// //將購物車訂單送出
-// if(isset($_POST['buyorder']))
-// {
-//     var_dump($_POST['itemcount1']);
-//     echo "送出訂單 <br>".$_POST['itemcount1'];
-//     for($j=0;$j<$totalItem;$j++)
-//     {
-//          $number="itemcount$j";
-//          echo $number."<br>";
-//          echo $_POST[$number];
-//          echo "*<br>";
-//     }
-// }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -117,7 +166,7 @@ if(isset($_POST['buyorder']))
 <body>
 
     <?php
-    // require_once("header.php");
+    require_once("header.php");
     for ($i = 0; $i < $totalItem; $i++) {
     ?>
         <!--網頁顯示-->
