@@ -16,6 +16,7 @@
     display:grid;
     grid-template-columns: repeat(3,2fr);
     grid-column-gap: 30px;
+    margin-bottom: 10px;
     /* text-align: center; */
 }
 img
