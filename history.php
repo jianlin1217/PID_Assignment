@@ -144,26 +144,11 @@
                 // alert("明細"+i);
                 for(let h=0;h< <?=$countHis?>;h++)
                 {
-                    $("#detailAll"+h).hide();
-                    $("#detail"+h).show();
+                    if(h!=i)
+                         $("#detail"+h).toggle();
                 }
                 
-
-                if($("#test").text()==0)
-                {
-                    for(let j=0;j< <?=$countHis?>;j++)
-                    {
-                        if(i!=j)
-                        $("#detail"+j).hide();
-                    }
-                    $("#detailAll"+i).show();
-                    $("#test").text(1);
-                }
-                else
-                {
-                    $("#detailAll"+i).hide();
-                    $("#test").text(0);
-                }
+                $("#detailAll"+i).toggle();
             })
         }
     </script>

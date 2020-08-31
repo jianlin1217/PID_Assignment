@@ -96,15 +96,13 @@
                 <textarea name="textF" id="textF<?=$i?>" cols="24" rows="10" style="width: 200px; height:200px" disabled><?=$proMeg[$i]?></textarea>
                 
             </div>
-        </div>   
+            </div>   
+            <button id="btnSend<?=$i?>" name="btnSend<?=$i?>" style="display: none; float:right">送出</button>
         </form>
 
         <?php
             }
         ?>
-        <form action="" method="post">
-            <button id="btnSend" name="btnSend" style="display: none; float:right">送出</button>
-        </form>
     </div>
     
 </body>
