@@ -87,12 +87,16 @@ require("connectDB.php");
                     alert("已有相同帳號註冊！！");
                 </script>
             <?php
-            } else {
+            } 
+            else {
+                //現在時間
+                date_default_timezone_set("Asia/Taipei");
+                $nowDate = date("Y-m-d H:i:s");
                 $regText=<<<end
                 insert into customerList
-                (customerName,customerAccount,customerPassword,customerAddress,customerPhone,customerMail)
+                (customerName,customerAccount,customerPassword,customerAddress,customerPhone,customerMail,joinTime)
                 VALUES
-                ("$cName","$cAct","$cPass","$cAddress","$cPhone","$cMail");
+                ("$cName","$cAct","$cPass","$cAddress","$cPhone","$cMail","$nowDate");
                 end;
                 // echo $regText;
                 // 存到資料庫中

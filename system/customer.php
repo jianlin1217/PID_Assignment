@@ -1,6 +1,7 @@
 <?php
     session_start();
     require_once("connectDB.php");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,6 +27,7 @@
         <table class="table" style="width:90%;">
             <thead>
                 <tr>
+                    <th>客戶編號</th>
                     <th>顧客名稱</th>
                     <th>總消費金額</th>
                     <th>加入日期</th>
@@ -33,70 +35,41 @@
                 </tr>
             </thead>
                 <?php
-                    $getHis=<<<end
-                    select hisListId,hisToatl,hisItemCount,hisDate from hisList where whoBuyId=$nowId;
+                    $getCusInfo=<<<end
+                    select * from customerList;
                     end;
-                    // echo $getHis;
-                    $countHis=0;
-                    $result=mysqli_query($link,$getHis);
+                    $countCus=0;
+                    $result=mysqli_query($link,$getCusInfo);
+                    //計算總數量
                     $i=0;
                     while($row=mysqli_fetch_assoc($result))
                     {
-                        $nowHisId=$row['hisListId'];
+                        $nowCusId=$row['customerId'];
+                        $getspend=<<<end
+                        select sum(total) from orderList where orderCusId=$nowCusId;
+                        end;
+                        $sresult=mysqli_query($link,$getspend);
+                        $stotal=mysqli_fetch_assoc($sresult)['sum(total)'];
+                        if($stotal==null)
+                        $stotal=0;
                 ?>
                 <tbody>
-                    <tr id="detail<?=$i?>">
-                        <td><?=$row['hisListId']?></td>
-                        <td><?=$row['hisItemCount']?></td>
-                        <td><?=$row['hisToatl']?></td>
-                        <td><?=$row['hisDate']?></td>
+                    <tr id="customer<?=$i?>">
+                        <td><?=$row['customerId']?></td>
+                        <td><?=$row['customerName']?></td>
+                        <td><?=$stotal?></td>
+                        <td><?=$row['joinTime']?></td>
+                        <td><?=$row['customerYN']?></td>
                     </tr>
                
                 </tbody> 
             <?php
                 $i++;
                 }
-                $countHis=$i;
-                global $countHis;
+                $countCus=$i;
+                global $countCus;
             ?>
         </table>
-        <?php
-            $result=mysqli_query($link,$getHis);
-            $i=0;
-            while($row=mysqli_fetch_assoc($result))
-            {
-                $nowHisId=$row['hisListId'];
-        ?>
-        <table id="detailAll<?=$i?>" type="table" style="width:90%; display:none; margin-bottom:130px;">
-                            <p style="display: none;" id="test">0</p>
-                            <tr>
-                                <th>飲品名稱</th>
-                                <th>飲品金額</th>
-                                <th>飲品數量</th>
-                                <th>金額</th>
-                            </tr>
-                            <?php
-                                $getdetailDB=<<<end
-                                select itemName,itemPrice,itemCount from orderDetail where orderId=$nowHisId;
-                                end;
-                                $result2=mysqli_query($link,$getdetailDB);
-                                while($row2=mysqli_fetch_assoc($result2))
-                                {
-                            ?>
-                            <tr>
-                                    <td><?=$row2['itemName']?></td>
-                                    <td><?=$row2['itemPrice']?></td>
-                                    <td><?=$row2['itemCount']?></td>
-                                    <td><?=$row2['itemPrice']*$row2['itemCount']?></td>
-                            </tr>
-                            <?php
-                                }
-                            ?>
-         </table>
-         <?php
-            $i++;
-            }
-         ?>
     </div>
 
     <?php

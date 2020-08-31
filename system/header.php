@@ -20,7 +20,7 @@
     </script>
     <?php
         }
-
+    
         
     ?>
 <nav class="navbar navbar-expand-sm bg-secondary navbar-dark fixed-top" style=" position: fixed; width:100%;  height:60px;">
@@ -31,7 +31,7 @@
             <a id="productM" class="nav-link" href="../system/products.php">商品管理</a>
         </li>
         <li class="nav-item ">
-            <a id="memberM" class="nav-link" href="../system/member.php">員工管理</a>
+            <a id="memberM" class="nav-link" href="../system/customer.php">會員管理</a>
         </li>
         <li class="nav-item ">
             <a id="orderM" class="nav-link" href="../system/order.php">訂單管理</a>
@@ -58,7 +58,6 @@
             <script>
                 $("#memberM").hide();
                 $("#reportM").hide();
-                // alert("隱藏ＲＲＲ");
             </script>
         <?php
         }
