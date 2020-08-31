@@ -1,10 +1,16 @@
 <?php
     session_start();
     require_once("connectDB.php");
-    if(isset($_POST['loginout']))
-    {
-        header("location: index.php");
-    }
+    //管理階級
+    $_SESSION['Rank']=0;
+    //獲取管理階級
+    $mId=$_SESSION['memberId'];
+    $getRank=<<<end
+    select rankId from memberList where memberId = $mId;
+    end;
+    $result=mysqli_query($link,$getRank);
+    $_SESSION['Rank']=mysqli_fetch_assoc($result)['rankId'];
+    echo $_SESSION['Rank'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,6 +36,7 @@
     </script>
     <?php
         }
+
         
     ?>
     <meta charset="UTF-8">
@@ -45,11 +52,14 @@
     <title>BearBees -- 管理系統</title>
 </head>
 <body>
-    <?php require_once("header.php");?>
+    <?php 
+        require_once("header.php");
+    ?>
 
 
     <script>
         $("#whologin").show();
+        
     </script>
 </body>
 </html>
