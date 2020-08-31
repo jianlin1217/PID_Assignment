@@ -155,11 +155,14 @@ global $proTotal;
     for ($i = 0; $i < $proTotal; $i++) {
         if (isset($_POST['btnDel' . $i])) {
             //刪除商品
-            $j = $i - 1;
             $deleteP = <<<end
-             delete from itemList where itemId = $proId[$j];
+             delete from itemList where itemId = $proId[$i];
              end;
             mysqli_query($link, $deleteP);
+            $deleteCar =<<<end
+            delete from shopCar where buyItemId = $proId[$i]
+            end;
+            mysqli_query($link,$deleteCar);
         }
     }
     ?>

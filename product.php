@@ -20,14 +20,16 @@ $nowId = $_SESSION['nowMemberId'];
 $drinkId = array();
 $drinkName = array();
 $drinkPrice = array();
+$drinkImg= array();
 $askCommend = <<<end
-    select itemId,itemPrice,itemName,remainCount from itemList;
+    select itemId,drinkImg,itemPrice,itemName,remainCount from itemList;
     end;
 $result = mysqli_query($link, $askCommend);
 while ($row = mysqli_fetch_assoc($result)) {
     array_push($drinkId, $row['itemId']);
     array_push($drinkName, $row['itemName']);
     array_push($drinkPrice, $row['itemPrice']);
+    array_push($drinkImg,$row['drinkImg']);
 }
 //總共商品有哪些
 global $totalItem;
@@ -109,7 +111,7 @@ for ($i = 0; $i < $totalItem; $i++) {
             for ($j = 0; $j < 3 && $remain < $totalItem; $j++, $remain++) {
             ?>
                 <div class="pro">
-                    <img src="img/blacktea.jpg" alt="找不到圖片ＱＡＯ">
+                    <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($drinkImg[$remain]); ?>" alt="找不到圖片ＱＡＯ">
                     <p><?= $drinkName[$remain] ?></p>
                     <p><?= $drinkPrice[$remain] ?></p>
                     <form id="form<?= $remain ?>" action="" method="post">
