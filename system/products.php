@@ -7,6 +7,7 @@
     $proRemain=array();
     $proMeg=array();
     $proImgLink=array();
+    $proId=array();
 
     //從資料庫中讀取產品
     $getProduct=<<<end
@@ -20,6 +21,7 @@
         array_push($proRemain,$row["remainCount"]);
         array_push($proMeg,$row["ItemMassage"]);
         array_push($proImgLink,$row["drinkImg"]);
+        array_push($proId,$row['itemId']);
     }
     // var_dump($proName);
     // var_dump($proPrice);
@@ -35,6 +37,26 @@
     if(isset($_POST['btnAdd']))
     {
         echo "新增";
+    }
+
+    //接收修改資料
+    for($i=0;$i<$proTotal;$i++)
+    {
+        if(isset($_POST['btnSend'.$i]))
+        {
+            // echo "這是第 $i 項產品";
+            $Pname=$_POST['pName'.$i];
+            $Pprice=$_POST['price'.$i];
+            $Premain=$_POST['remain'.$i];
+            $Pdescribe=$_POST['textF'.$i];
+
+            //修改資料傳送資料庫
+            $modify=<<<end
+            update itemList set itemPrice = $Pprice , itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe" where itemId = $proId[$i] ;
+            end;
+            // echo $modify;
+            mysqli_query($link,$modify);
+        }
     }
 ?>
 
@@ -76,28 +98,31 @@
                 <div class="wrapper3 " >
                     <p>
                         商品名稱<br><br><br>
-                        <input name="pName" id="pName<?=$i?>" disabled value="<?=$proName[$i]?>">
+                        <input name="pName<?=$i?>" id="pName<?=$i?>" disabled value="<?=$proName[$i]?>">
                         
                     </p>
                     <p>
                         商品金額<br><br><br>
-                        <input name="price" id="price<?=$i?>" disabled value="<?=$proPrice[$i]?>">
+                        <input name="price<?=$i?>" id="price<?=$i?>" disabled value="<?=$proPrice[$i]?>">
                         
                     </p>
                     <p>
                         剩餘數量<br><br><br>
-                        <input name="remain" id="remain<?=$i?>" disabled value="<?=$proRemain[$i]?> ">
+                        <input name="remain<?=$i?>" id="remain<?=$i?>" disabled value="<?=$proRemain[$i]?> ">
                         
                     </p>
                 </div>
             </div>
             <div>
                 <p>商品描述:<br></p>
-                <textarea name="textF" id="textF<?=$i?>" cols="24" rows="10" style="width: 200px; height:200px" disabled><?=$proMeg[$i]?></textarea>
-                
+                <textarea name="textF<?=$i?>" id="textF<?=$i?>" cols="24" rows="10" style="width: 200px; height:200px" disabled><?=$proMeg[$i]?></textarea>
+                <button id="btnSend<?=$i?>" name="btnSend<?=$i?>" style="display:none; float:right">送出</button>
             </div>
+            </div>
+            <div class="container">
+                
+
             </div>   
-            <button id="btnSend<?=$i?>" name="btnSend<?=$i?>" style="display: none; float:right">送出</button>
         </form>
 
         <?php
@@ -116,20 +141,35 @@
         if(flag==true)
         {
             flag=false;
-            $("input[name='pName']").attr("disabled",false);
-            $("input[name='price']").attr("disabled",false);
-            $("input[name='remain']").attr("disabled",false);
-            $("textarea[name='textF']").attr("disabled",false);
-            document.getElementById("btnSend").style.display="block";
+            <?php
+                for($i=0;$i<$proTotal;$i++)
+                {
+            ?>
+                $("input[name='pName<?=$i?>']").attr("disabled",false);
+                $("input[name='price<?=$i?>']").attr("disabled",false);
+                $("input[name='remain<?=$i?>']").attr("disabled",false);
+                $("textarea[name='textF<?=$i?>']").attr("disabled",false);
+                document.getElementById("btnSend<?=$i?>").style.display="block";
+            <?php
+                }
+            ?>
         }   
         else
         {
             flag=true;
-            $("input[name='pName']").attr("disabled",true);
-            $("input[name='price']").attr("disabled",true);
-            $("input[name='remain']").attr("disabled",true);
-            $("textarea[name='textF']").attr("disabled",true);
-            document.getElementById("btnSend").style.display="none";
+            
+            <?php
+                for($i=0;$i<$proTotal;$i++)
+                {
+            ?>
+            $("input[name='pName<?=$i?>']").attr("disabled",true);
+            $("input[name='price<?=$i?>']").attr("disabled",true);
+            $("input[name='remain<?=$i?>']").attr("disabled",true);
+            $("textarea[name='textF<?=$i?>']").attr("disabled",true);
+            document.getElementById("btnSend<?=$i?>").style.display="none";
+            <?php
+                }
+            ?>
         }
     })
 </script>
