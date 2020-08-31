@@ -82,16 +82,18 @@ require_once("connectDB.php");
                 $result=mysqli_query($link,$same);
                 $row=mysqli_fetch_assoc($result);
 
-                if($row==null)
+                if(true)
                 {
 
                 // 將產品資料上傳到資料庫 
-                // update itemList set drinkImg = '$image' where itemId = 2;
+                // $re=<<<end
+                //  update itemList set drinkImg = '$imgContent' where itemId = 4;
+                //  end;
                 $addProduct=<<<end
                 insert into itemList
                 (itemName,itemPrice,ItemMassage,drinkImg)
                 values
-                ("$n",$p,"$m","$image");
+                ("$n",$p,"$m","$imgContent");
                 end;
                 // echo $addProduct;
                 $result=mysqli_query($link,$addProduct);

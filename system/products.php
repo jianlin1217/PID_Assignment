@@ -6,7 +6,7 @@
     $proPrice=array();
     $proRemain=array();
     $proMeg=array();
-    $proImgLink=array();
+    // $proImgLink=array();
     $proId=array();
     //產品ＩＤ
     $_SESSION['pID']=array();
@@ -22,7 +22,7 @@
         array_push($proPrice,$row["itemPrice"]);
         array_push($proRemain,$row["remainCount"]);
         array_push($proMeg,$row["ItemMassage"]);
-        array_push($proImgLink,$row["drinkImg"]);
+        // array_push($proImgLink,$row["drinkImg"]);
         array_push($proId,$row['itemId']);
     }
     $_SESSION['pID']=$proId;
@@ -65,12 +65,16 @@
                 <button id="btnMod" name="btnMod">修改</button>        
         </div>
         <?php
+             $result=mysqli_query($link,$getProduct);
             for($i=0;$i<$proTotal;$i++)
             {
+                $row=mysqli_fetch_assoc($result);
+                // echo base64_encode($row["drinkImg"]);
         ?>
         <form action="" method="post">
             <div class="wrapper bound" style="margin-top: 20px;">
-            <img src="../img/bubbleTea.jpg" alt="ＲＲＲＲ">
+            <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($row["drinkImg"]); ?>" alt="ＲＲＲＲ">
+            
             <div>
                 <div class="wrapper3 " >
                     <p>
