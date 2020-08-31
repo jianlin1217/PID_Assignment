@@ -1,3 +1,28 @@
+<!--對於被禁止的帳戶聲明並返回首頁-->
+<?php
+    session_start();
+        if($_SESSION['accessAbility']==false&&$_SESSION['memberAccount']==null)
+        {
+    ?>
+    <script>
+        alert("請先登入!");
+        location.href="index.php";
+    </script>
+    <?php
+        }
+        else if($_SESSION['accessAbility']==false)
+        {
+    ?>
+    <script> 
+        alert("對不起,"+"<?=$_SESSION['memberAccount']?>"+",您已被禁止使用管理系統");
+        location.href="index.php";
+        
+    </script>
+    <?php
+        }
+
+        
+    ?>
 <nav class="navbar navbar-expand-sm bg-secondary navbar-dark fixed-top" style=" position: fixed; width:100%;  height:60px;">
     <!-- Brand/logo -->
     <a class="navbar-brand" src="" href="system.php">BearBees ʕ·ᴥ·ʔ 管理系統</a>

@@ -8,6 +8,8 @@
     $proMeg=array();
     $proImgLink=array();
     $proId=array();
+    //產品ＩＤ
+    $_SESSION['pID']=array();
 
     //從資料庫中讀取產品
     $getProduct=<<<end
@@ -23,6 +25,7 @@
         array_push($proImgLink,$row["drinkImg"]);
         array_push($proId,$row['itemId']);
     }
+    $_SESSION['pID']=$proId;
     // var_dump($proName);
     // var_dump($proPrice);
     // var_dump($proRemain);
@@ -32,32 +35,6 @@
     //總產品數量
     $proTotal=count($proName);
     global $proTotal;
-
-    //產品作用按鈕
-    if(isset($_POST['btnAdd']))
-    {
-        echo "新增";
-    }
-
-    //接收修改資料
-    for($i=0;$i<$proTotal;$i++)
-    {
-        if(isset($_POST['btnSend'.$i]))
-        {
-            // echo "這是第 $i 項產品";
-            $Pname=$_POST['pName'.$i];
-            $Pprice=$_POST['price'.$i];
-            $Premain=$_POST['remain'.$i];
-            $Pdescribe=$_POST['textF'.$i];
-
-            //修改資料傳送資料庫
-            $modify=<<<end
-            update itemList set itemPrice = $Pprice , itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe" where itemId = $proId[$i] ;
-            end;
-            // echo $modify;
-            mysqli_query($link,$modify);
-        }
-    }
 ?>
 
 <!DOCTYPE html>
@@ -116,7 +93,11 @@
             <div>
                 <p>商品描述:<br></p>
                 <textarea name="textF<?=$i?>" id="textF<?=$i?>" cols="24" rows="10" style="width: 200px; height:200px" disabled><?=$proMeg[$i]?></textarea>
-                <button id="btnSend<?=$i?>" name="btnSend<?=$i?>" style="display:none; float:right">送出</button>
+                <div class="wrapper2">
+                    <button id="btnDel<?=$i?>" name="btnDel<?=$i?>" style="display:none; float:right">刪除</button>
+                    <button id="btnSend<?=$i?>" name="btnSend<?=$i?>" style="display:none; float:right">修改送出</button>
+                </div>
+                
             </div>
             </div>
             <div class="container">
@@ -129,10 +110,48 @@
             }
         ?>
     </div>
-    
+    <!-- php 程式碼區域 -->
+<?php
+     //接收修改資料
+     for($i=0;$i<$proTotal;$i++)
+     {
+         if(isset($_POST['btnSend'.$i]))
+         {
+             ?>
+             <?php
+             // echo "這是第 $i 項產品";
+             $Pname=$_POST['pName'.$i];
+             $Pprice=$_POST['price'.$i];
+             $Premain=$_POST['remain'.$i];
+             $Pdescribe=$_POST['textF'.$i];
+ 
+             //修改資料傳送資料庫
+             $modify=<<<end
+             update itemList set itemPrice = $Pprice , itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe" where itemId = $proId[$i] ;
+             end;
+             // echo $modify;
+             mysqli_query($link,$modify);
+         }
+     }
+     //刪除商品
+     for($i=0;$i<$proTotal;$i++)
+     {
+         if(isset($_POST['btnDel'.$i]))
+         {
+             //刪除商品
+             $deleteP=<<<end
+             delete from itemList where itemId = $proId[$i];
+             end;
+             mysqli_query($link,$deleteP);
+         }
+     }
+?>
 </body>
 <script>
-    
+        //新增商品
+        $("#btnAdd").click(function(){
+            location.href="newProduct.php";
+        })
 
     let flag=true;
     $("#btnMod").click(function(){
@@ -150,6 +169,7 @@
                 $("input[name='remain<?=$i?>']").attr("disabled",false);
                 $("textarea[name='textF<?=$i?>']").attr("disabled",false);
                 document.getElementById("btnSend<?=$i?>").style.display="block";
+                document.getElementById("btnDel<?=$i?>").style.display="block";
             <?php
                 }
             ?>
@@ -167,6 +187,7 @@
             $("input[name='remain<?=$i?>']").attr("disabled",true);
             $("textarea[name='textF<?=$i?>']").attr("disabled",true);
             document.getElementById("btnSend<?=$i?>").style.display="none";
+            document.getElementById("btnDel<?=$i?>").style.display="none";
             <?php
                 }
             ?>

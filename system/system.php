@@ -15,30 +15,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!--對於被禁止的帳戶聲明並返回首頁-->
-    <?php
-        if($_SESSION['accessAbility']==false&&$_SESSION['memberAccount']==null)
-        {
-    ?>
-    <script>
-        alert("請先登入!");
-        location.href="index.php";
-    </script>
-    <?php
-        }
-        else if($_SESSION['accessAbility']==false)
-        {
-    ?>
-    <script> 
-        alert("對不起,"+"<?=$_SESSION['memberAccount']?>"+",您已被禁止使用管理系統");
-        location.href="index.php";
-        
-    </script>
-    <?php
-        }
-
-        
-    ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <!-- Latest compiled and minified CSS -->
