@@ -69,7 +69,8 @@
             for($i=0;$i<$proTotal;$i++)
             {
         ?>
-        <div class="wrapper bound" style="margin-top: 20px;">
+        <form action="" method="post">
+            <div class="wrapper bound" style="margin-top: 20px;">
             <img src="../img/bubbleTea.jpg" alt="ＲＲＲＲ">
             <div>
                 <div class="wrapper3 " >
@@ -95,7 +96,9 @@
                 <textarea name="textF" id="textF<?=$i?>" cols="24" rows="10" style="width: 200px; height:200px" disabled><?=$proMeg[$i]?></textarea>
                 
             </div>
-        </div>
+        </div>   
+        </form>
+
         <?php
             }
         ?>

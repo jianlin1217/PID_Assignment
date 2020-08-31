@@ -17,7 +17,7 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item ">
-                    <p style="text-align:center;" class="nav-link"  href="">現在登入：</p>
+                    <p id="whologin" style="text-align:center;" class="nav-link">現在登入： <?=$_SESSION['memberAccount']?> </p>
                 </li>
                 <form action="" method="post">
                     

@@ -3,26 +3,54 @@
      require_once("connectDB.php");
      //現在登入的人
      $_SESSION['memberAccount']=null;
+     $_SESSION['accessAbility']=false;
+     $_SESSION['memberId']=null;
 
     // echo "12346",$txtlogin=$_POST['act'];;
     // $_POST['btnlogin']=1;
-    if(isset($_POST['btnlogin']))
-    {
-        echo "新增";
-    }
-     if(isset($_POST['btnlogin']))
-     {
-            $txtlogin=$_POST['act'];
-            $txtloginpwd=$_POST['pwd'];
-            echo $txtlogin . " 123 " . $txtloginpwd;
-            $_SESSION['memberAccount']=$txtlogin;
-            // header("location: system.php");
-     }
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <?php
+        if(isset($_POST['btnlogin']))
+        {
+               $txtlogin=$_POST['act'];
+               $txtloginpwd=$_POST['pwd'];
+               $getM=<<<end
+               select memberName,memberId,memberYN from memberList where memberAccount = "$txtlogin" AND memberPassword = "$txtloginpwd";
+               end;
+               $result=mysqli_query($link,$getM);
+               $row=mysqli_fetch_assoc($result);
+            //    var_dump($row);
+               if($row!=NULL&&$row['memberYN']!="N")
+               {
+                   //存放登入者的名字
+                   $_SESSION['memberAccount']=$row['memberName'];
+                   $_SESSION['memberId']=$row['memberId'];
+                   $_SESSION['accessAbility']=true;
+                //    echo "登入成功";
+                   header("location: system.php");
+               }
+               else if($row!=NULL&&$row['memberYN']=="N")
+               {
+                   //存放登入者的名字
+                   $_SESSION['memberAccount']=$row['memberName'];
+                //    echo "被禁止使用的";
+                   header("location: system.php");
+               }
+               else
+               {
+               ?>
+               <script>
+                   alert("輸入帳號或密碼錯誤");
+               </script>
+    <?php  
+               }         
+        }
+    ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BearBees -- 管理系統</title>

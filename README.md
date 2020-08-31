@@ -143,7 +143,7 @@ RWD網頁
 -- https://www.phpmyadmin.net/
 --
 -- 主機： localhost:8889
--- 產生時間： 2020 年 08 月 26 日 09:52
+-- 產生時間： 2020 年 08 月 31 日 00:52
 -- 伺服器版本： 5.7.26
 -- PHP 版本： 7.4.2
 
@@ -176,7 +176,203 @@ CREATE TABLE `customerList` (
 
 INSERT INTO `customerList` (`customerId`, `customerName`, `customerAccount`, `customerPassword`, `customerPhone`, `customerAddress`, `customerMail`) VALUES
 (1, '熊仔', 'Bear0826', 'Bearpwd0826', '0978312465', '台中西屯區', 'Bear0826@gamil.com'),
-(5, 'BrownBear', 'BBear1217', 'Bear1217', '0958285961', '', 'BBear1217@gmail.com');
+(5, 'BrownBear', 'BBear1217', 'Bear1217', '0958285961', '', 'BBear1217@gmail.com'),
+(6, '黑熊', 'Black0828', 'Black0828', '0946587521', '深山', 'BearTest0828@yahoo.com.tw');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `hisList`
+--
+
+CREATE TABLE `hisList` (
+  `hisListId` int(11) NOT NULL,
+  `whoBuyId` int(11) DEFAULT NULL,
+  `hisToatl` int(11) DEFAULT NULL,
+  `hisItemCount` int(11) DEFAULT NULL,
+  `hisDate` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 傾印資料表的資料 `hisList`
+--
+
+INSERT INTO `hisList` (`hisListId`, `whoBuyId`, `hisToatl`, `hisItemCount`, `hisDate`) VALUES
+(1, 5, 725, 16, '2020-08-28 10:20:43'),
+(2, 5, 955, 15, '2020-08-28 10:20:43'),
+(3, 5, 775, 12, '2020-08-28 10:20:43'),
+(4, 5, 265, 5, '2020-08-28 10:20:43'),
+(5, 5, 675, 10, '2020-08-28 10:20:43'),
+(6, 5, 280, 4, '2020-08-28 10:20:43'),
+(7, 6, 500, 10, '2020-08-28 10:20:43'),
+(8, 6, 775, 12, '2020-08-28 10:20:43'),
+(9, 5, 275, 4, '2020-08-28 10:20:43'),
+(10, 5, 280, 8, '2020-08-28 14:47:40');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `itemList`
+--
+
+CREATE TABLE `itemList` (
+  `itemId` int(11) NOT NULL,
+  `itemPrice` int(11) DEFAULT NULL,
+  `itemName` varchar(30) DEFAULT NULL,
+  `remainCount` int(11) DEFAULT NULL,
+  `saleOut` int(11) DEFAULT NULL,
+  `drinkImg` varchar(5000) DEFAULT NULL,
+  `ItemMassage` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 傾印資料表的資料 `itemList`
+--
+
+INSERT INTO `itemList` (`itemId`, `itemPrice`, `itemName`, `remainCount`, `saleOut`, `drinkImg`, `ItemMassage`) VALUES
+(1, 70, '熊掌奶茶', 120, 200, NULL, '由錫蘭紅茶為基底加上牛奶的沖泡\r\n加上特製外形的熊掌Ｑ掌珍珠\r\n每一口都是心的享受'),
+(2, 35, '熊蜜紅茶', 70, 250, NULL, ''),
+(3, 35, '熊蜜綠茶', 200, 70, NULL, ''),
+(4, 60, '北極熊奶茶', 150, 150, NULL, ''),
+(5, 65, '黑熊奶茶', 130, 100, NULL, '');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `memberList`
+--
+
+CREATE TABLE `memberList` (
+  `memberId` int(11) NOT NULL,
+  `rankId` int(11) DEFAULT '1',
+  `memberName` varchar(30) DEFAULT NULL,
+  `memberAccount` varchar(30) DEFAULT NULL,
+  `memberPassword` varchar(16) DEFAULT NULL,
+  `memberPhone` char(10) DEFAULT NULL,
+  `memberAddress` varchar(40) DEFAULT NULL,
+  `memberYN` enum('Y','N') NOT NULL DEFAULT 'Y'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `mRank`
+--
+
+CREATE TABLE `mRank` (
+  `rankId` int(11) DEFAULT NULL,
+  `rankName` varchar(20) DEFAULT NULL,
+  `rankSalary` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 傾印資料表的資料 `mRank`
+--
+
+INSERT INTO `mRank` (`rankId`, `rankName`, `rankSalary`) VALUES
+(1, '一般職員', 25000),
+(2, '店長', 32000),
+(3, '儲備店長', 30000),
+(4, '老闆', 50000);
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `orderDetail`
+--
+
+CREATE TABLE `orderDetail` (
+  `orderId` int(11) DEFAULT NULL,
+  `itemPrice` int(11) DEFAULT NULL,
+  `itemName` varchar(30) DEFAULT NULL,
+  `itemCount` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 傾印資料表的資料 `orderDetail`
+--
+
+INSERT INTO `orderDetail` (`orderId`, `itemPrice`, `itemName`, `itemCount`) VALUES
+(1, 70, '熊掌奶茶', 4),
+(1, 35, '熊蜜綠茶', 5),
+(1, 65, '黑熊奶茶', 3),
+(1, 35, '熊蜜紅茶', 5),
+(2, 65, '黑熊奶茶', 5),
+(2, 70, '熊掌奶茶', 3),
+(2, 60, '北極熊奶茶', 7),
+(3, 65, '黑熊奶茶', 5),
+(3, 70, '熊掌奶茶', 3),
+(3, 60, '北極熊奶茶', 4),
+(4, 65, '黑熊奶茶', 1),
+(4, 70, '熊掌奶茶', 1),
+(4, 60, '北極熊奶茶', 1),
+(4, 35, '熊蜜綠茶', 1),
+(4, 35, '熊蜜紅茶', 1),
+(5, 70, '熊掌奶茶', 5),
+(5, 65, '黑熊奶茶', 5),
+(6, 70, '熊掌奶茶', 4),
+(7, 35, '熊蜜紅茶', 1),
+(7, 35, '熊蜜綠茶', 3),
+(7, 60, '北極熊奶茶', 6),
+(8, 70, '熊掌奶茶', 4),
+(8, 65, '黑熊奶茶', 3),
+(8, 60, '北極熊奶茶', 5),
+(9, 65, '黑熊奶茶', 1),
+(9, 70, '熊掌奶茶', 3),
+(10, 35, '熊蜜紅茶', 5),
+(10, 35, '熊蜜綠茶', 3);
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `orderList`
+--
+
+CREATE TABLE `orderList` (
+  `orderId` int(11) NOT NULL,
+  `total` int(11) DEFAULT NULL,
+  `orderCusId` int(11) DEFAULT NULL,
+  `orderManageId` int(11) DEFAULT NULL,
+  `orderCount` int(11) DEFAULT NULL,
+  `orderDate` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 傾印資料表的資料 `orderList`
+--
+
+INSERT INTO `orderList` (`orderId`, `total`, `orderCusId`, `orderManageId`, `orderCount`, `orderDate`) VALUES
+(1, 1030, 5, NULL, 20, '2020-08-28 10:20:43'),
+(2, 955, 5, NULL, 15, '2020-08-28 11:00:04'),
+(3, 775, 5, NULL, 12, '2020-08-28 11:04:19'),
+(4, 265, 5, NULL, 5, '2020-08-28 11:05:10'),
+(5, 675, 5, NULL, 10, '2020-08-28 11:05:54'),
+(6, 280, 5, NULL, 4, '2020-08-28 12:36:36'),
+(7, 500, 6, NULL, 10, '2020-08-28 13:42:04'),
+(8, 775, 6, NULL, 12, '2020-08-28 13:43:29'),
+(9, 275, 5, NULL, 4, '2020-08-28 14:46:48'),
+(10, 280, 5, NULL, 8, '2020-08-28 14:47:40');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `shopCar`
+--
+
+CREATE TABLE `shopCar` (
+  `putInId` int(11) NOT NULL,
+  `buyCusId` int(11) NOT NULL,
+  `buyItemId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 傾印資料表的資料 `shopCar`
+--
+
+INSERT INTO `shopCar` (`putInId`, `buyCusId`, `buyItemId`) VALUES
+(17, 1, 1),
+(18, 1, 5),
+(19, 1, 2);
 
 --
 -- 已傾印資料表的索引
@@ -189,6 +385,36 @@ ALTER TABLE `customerList`
   ADD PRIMARY KEY (`customerId`);
 
 --
+-- 資料表索引 `hisList`
+--
+ALTER TABLE `hisList`
+  ADD PRIMARY KEY (`hisListId`);
+
+--
+-- 資料表索引 `itemList`
+--
+ALTER TABLE `itemList`
+  ADD PRIMARY KEY (`itemId`);
+
+--
+-- 資料表索引 `memberList`
+--
+ALTER TABLE `memberList`
+  ADD PRIMARY KEY (`memberId`);
+
+--
+-- 資料表索引 `orderList`
+--
+ALTER TABLE `orderList`
+  ADD PRIMARY KEY (`orderId`);
+
+--
+-- 資料表索引 `shopCar`
+--
+ALTER TABLE `shopCar`
+  ADD PRIMARY KEY (`putInId`);
+
+--
 -- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
 --
 
@@ -196,4 +422,34 @@ ALTER TABLE `customerList`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customerList`
 --
 ALTER TABLE `customerList`
-  MODIFY `customerId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `customerId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `hisList`
+--
+ALTER TABLE `hisList`
+  MODIFY `hisListId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `itemList`
+--
+ALTER TABLE `itemList`
+  MODIFY `itemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `memberList`
+--
+ALTER TABLE `memberList`
+  MODIFY `memberId` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `orderList`
+--
+ALTER TABLE `orderList`
+  MODIFY `orderId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `shopCar`
+--
+ALTER TABLE `shopCar`
+  MODIFY `putInId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
