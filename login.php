@@ -120,13 +120,32 @@ if(isset($_POST['Login']))
         {
             if($compareAccount[$i]==$_POST['act']&&$comparePass[$i]==$_POST['pwd'])
             {
-                $_SESSION['nowMemberId']=$compareId[$i];
+                
                 $askName=<<<end
                 select customerName from customerList where customerAccount ="$compareAccount[$i]"
                 end;
                 $row=mysqli_fetch_assoc(mysqli_query($link,$askName));
-                $_SESSION['NowLogin']=$row['customerName'];
-                header("location: index.php");
+                //偵測是否有沒有被禁用
+                $ifBan=<<<end
+                select customerYN from customerList where customerId=$compareId[$i];
+                end;
+                $row2=mysqli_fetch_assoc(mysqli_query($link,$ifBan));
+                if($row2['customerYN']=="Y")
+                {
+                  ?>
+                  <script>
+                    alert("很抱歉！！"+"<?=$row['customerName']?>"+"您已被禁止使用");
+                    location.href="login.php";
+                  </script>
+                  <?php
+                }
+                else
+                {
+                   $_SESSION['nowMemberId']=$compareId[$i];
+                  $_SESSION['NowLogin']=$row['customerName'];
+                  header("location: index.php");
+                }
+
             }
         }
         ?>
