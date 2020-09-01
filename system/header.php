@@ -31,7 +31,7 @@
             <a id="productM" class="nav-link" href="../system/products.php">商品管理</a>
         </li>
         <li class="nav-item ">
-            <a id="memberM" class="nav-link" href="../system/customer.php">會員管理</a>
+            <a id="customerM" class="nav-link" href="../system/customer.php">會員管理</a>
         </li>
         <li class="nav-item ">
             <a id="orderM" class="nav-link" href="../system/order.php">訂單管理</a>
@@ -56,8 +56,9 @@
         if ($_SESSION['Rank'] == 1) {
         ?>
             <script>
-                $("#memberM").hide();
+                $("#customerM").hide();
                 $("#reportM").hide();
+                $("#memberM").hide();
             </script>
         <?php
         }
