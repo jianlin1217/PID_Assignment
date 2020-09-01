@@ -11,6 +11,7 @@ if($_SESSION['nowMemberId']!=null)
 $drinkId = array();
 $drinkName = array();
 $drinkPrice = array();
+$drinkImg = array();
 $nowId = $_SESSION['nowMemberId'];
 //總共商品有哪些
 global $totalItem;
@@ -30,12 +31,13 @@ $totalItem = count($drinkId);
 for($i=0;$i<$totalItem;$i++)
 {
     $getItemDB=<<<end
-    select itemName,itemPrice,remainCount from itemList where itemId=$drinkId[$i]
+    select itemName,itemPrice,remainCount,drinkImg from itemList where itemId=$drinkId[$i]
     end;
     $result=mysqli_query($link,$getItemDB);
     $row=mysqli_fetch_assoc($result);
     array_push($drinkName,$row['itemName']);
     array_push($drinkPrice,$row['itemPrice']);
+    array_push($drinkImg,$row['drinkImg']);
     // echo $drinkName[$i]."  ".$drinkPrice[$i];
 }
 
@@ -172,7 +174,7 @@ if(isset($_POST['buyorder']))
         <!--網頁顯示-->
         <div class="wrapper outline" id="buyItem">
             <div class="wrapper2" id="d1">
-                <img src="img/bubbleTea.jpg" alt="找不到圖片ＱＡＯ">
+                <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($drinkImg[$i]);?>"alt="找不到圖片ＱＡＯ">
                 <div class="mid">
                     <p id="name<?= $i ?>" name="dname"><?= $drinkName[$i] ?></p>
                     <p id="price<?= $i ?>" name="price"><?= $drinkPrice[$i] ?></p>
