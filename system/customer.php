@@ -28,10 +28,10 @@ require_once("connectDB.php");
         }
     </script>
     <?php
-    // require_once("header.php");
+    require_once("header.php");
     ?>
     <div class="container" style=" margin-top: 130px;">
-        <h1>ʕ·ᴥ·ʔ顧客明細</h1>
+        <h1>ʕ·ᴥ·ʔ顧客明細--點按總消費金額以查看細項</h1>
         <table class="table" style="width:90%;">
             <thead>
                 <tr>
@@ -68,7 +68,7 @@ require_once("connectDB.php");
                     <tr id="customer<?= $i ?>">
                         <td><?= $row['customerId'] ?></td>
                         <td><?= $row['customerName'] ?></td>
-                        <td><?= $stotal ?></td>
+                        <td id="spend<?=$i?>"><?= $stotal ?></td>
                         <td><?= $row['joinTime'] ?></td>
                         <td><?= $row['customerYN'];array_push($allCusYN,$row['customerYN']); ?></td>
                         <td>
@@ -95,70 +95,109 @@ require_once("connectDB.php");
                 $i++;
             }
             $countCus = $i;
+            //顧客的總數量
             global $countCus;
             ?>
         </table>
+            <?php
+                $getCusInfo = <<<end
+                select customerId from customerList;
+                end;
+                $result=mysqli_query($link,$getCusInfo);
+                $i=0;
+                while($row=mysqli_fetch_assoc($result))
+                {
+            ?>
+                    <table id="cusbuy<?=$i?>" class="table" style="width:80%; display:none">
+                    <tr>
+                        <th>品項</th>
+                        <th>總購買數量</th>
+                        <th>總金額</th>
+                    </tr>
+            <?php
+
+                    $nowCus=$row['customerId'];
+                    //查詢出這個顧客有買過的所有品項
+                    $getitem=<<<end
+                    select DISTINCT itemName from orderDetail where orderId in (select hisListId from hisList where whoBuyId=$nowCus)
+                    end;
+                    $result2=mysqli_query($link,$getitem);
+                    while($row2=mysqli_fetch_assoc($result2))
+                    {
+                        $nowItemName=$row2['itemName'];
+                        $getcount=<<<end
+                        select sum(itemCount) from orderDetail where itemName="$nowItemName" AND orderId in (select hisListId from hisList where whoBuyId=$nowCus);
+                        end;
+                        // echo $getcount;
+                        $result3=mysqli_query($link,$getcount);
+                        $row3=mysqli_fetch_assoc($result3);
+                        $getprice=<<<end
+                        select itemPrice from itemList where itemName="$nowItemName";
+                        end;
+                        $result4=mysqli_query($link,$getprice);
+                        $row4=mysqli_fetch_assoc($result4);
+            ?>
+                <tr>
+                    <td><?=$row2['itemName']?></td>
+                    <td><?=$row3['sum(itemCount)']?></td>
+                    <td><?=$row3['sum(itemCount)']*$row4['itemPrice']?></td>
+                </tr>
+            <?php
+                    } 
+            ?>
+                </table>
+            <?php
+                    //計數第幾個顧客
+                    $i++;
+                }
+            ?>
+       
     </div>
 
     <?php
+    //禁用  解禁
     for ($i = 0; $i < $countCus; $i++) {
         if (isset($_POST['btnNo' . $i])&&$allCusYN[$i]=="Y") {
             // echo $i;
             $ban=<<<end
                 update customerList set customerYN="N" where customerId = $allCudId[$i];
             end;
-            echo $ban;
+            // echo $ban;
             mysqli_query($link,$ban);
-            header("location: customer.php");
+            // echo "123";
+            // sleep(1);
+            header("location:customer.php");
         }
         else if(isset($_POST['btnNo' . $i])&&$allCusYN[$i]=="N")
         {
             $ban=<<<end
                 update customerList set customerYN="Y" where customerId = $allCudId[$i];
             end;
-            echo $ban;
+            // echo $ban;
             mysqli_query($link,$ban);
-            header("location: customer.php");
+            // sleep(1);
+            header("location:customer.php");
         }
+        // header("location: index.php");
             
     }
     ?>
 
     <script>
-        //叫出登入畫面
-        $("#login").click(function() {
-            document.location.href = 'login.php';
-        })
-
-        //購物車畫面隱藏或顯示
-        <?php
-        if ($_SESSION['loginFlag'] == "true") {
-        ?>
-            $("#buyCar").show();
-            $("#history").show();
-            //歡迎會員
-            $("#welcome").text("welcome!!  " + "<?= $_SESSION['NowLogin'] ?>");
-        <?php
-        } else {
-        ?>
-            $("#buyCar").hide();
-            $("#history").hide();
-            $("#welcome").text("");
-        <?php
-        }
-        ?>
-
-        for (let i = 0; i < <?=$countCus?>; i++) {
-            $("#detail" + i).click(function() {
-                // alert("明細"+i);
-                for (let h = 0; h < <?=$countCus?>; h++) {
-                    if (h != i)
-                        $("#detail" + h).toggle();
+        //設定明細的隱藏
+        for(let i=0;i< <?=$countCus?>;i++)
+        {
+            $("#spend"+i).click(function(){
+                // alert(i);
+                for(let j=0;j< <?=$countCus?>;j++)
+                {
+                    if(j!=i)
+                    $("#customer"+j).toggle();
                 }
-
-                $("#detailAll" + i).toggle();
+                $("#cusbuy"+i).toggle();
             })
         }
+
     </script>
 </body>
 
