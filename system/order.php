@@ -39,7 +39,7 @@
             <?php
                 //訂單顯示  若是已經完成則隱藏起來
                 $askOrder=<<<end
-                select orderId,total,orderCusId,orderDate,orderManageId,finishYN from orderList;
+                select orderId,total,orderCusId,orderDate,orderManageId,finishYN,finishDate from orderList;
                 end;
                 $result=mysqli_query($link,$askOrder);
                 $countorder=0;
@@ -56,7 +56,13 @@
                     <td><?=$row['orderId']?></td>
                     <td><?=$row2['customerName']?></td>
                     <td><?=$row['orderDate']?></td>
-                    <td></td>
+                    <td>
+                        <select name="whoManage" id="whoManage">
+                            <?php
+                                
+                            ?>
+                        </select>
+                    </td>
                     <td id="YN<?=$countorder?>" value="<?=$row['finishYN']?>">
                         <?php
                         if($row['finishYN']=="Y")
@@ -69,7 +75,20 @@
                         }
                         ?>
                     </td>
-                    <td></td>
+                    <td>
+                        <?php
+                        if($row['finishDate']==NULL)
+                        {
+                        ?>
+                        <button id="finish<?=$countorder?>" name="finish<?=$countorder?>">完成</button>
+                        <?php
+                        }
+                        else
+                        {
+                            echo $row['finishDate'];
+                        }
+                        ?>
+                    </td>
                 </tr>
             <?php
                 $countorder++;
