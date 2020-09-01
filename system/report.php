@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require_once("connectDB.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,5 +21,22 @@
     <?php
         require_once("header.php");
     ?>
+    <div class="container" style="margin-top: 130px;">
+    <iframe src="" height="80%" width="80%" frameborder="0">
+        
+    </iframe>
+        <h1>報表</h1>
+        <label for="sDate">開始時間</label>
+        <input type="datetime-local" name="sDate" id="sDate">
+        <label for="eDate">結束時間</label>
+        <input type="datetime-local" name="eDate" id="eDate">
+        
+        <select name="" id="">
+            <option value="">已銷售數量</option>
+            <option value="">2</option>
+            <option value="">3</option>
+            <option value="">4</option>
+        </select>
+    </div>
 </body>
 </html>
