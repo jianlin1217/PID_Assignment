@@ -1,6 +1,7 @@
 <?php
     session_start();
     require_once("connectDB.php");
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,21 +23,33 @@
         require_once("header.php");
     ?>
     <div class="container" style="margin-top: 130px;">
-    <iframe src="" height="80%" width="80%" frameborder="0">
+        <form action="" method="post">
+            <h1>報表</h1>
+            <label for="sDate">開始時間</label>
+            <input type="datetime-local" name="sDate" id="sDate">
+            <label for="eDate">結束時間</label>
+            <input type="datetime-local" name="eDate" id="eDate">
+            
+            <select name="" id="">
+                <option value="已銷售數量">已銷售數量</option>
+                <option value="庫存">庫存</option>
+                <option value="">3</option>
+                <option value="">4</option>
+            </select>
+            <button type="submit" id="submit" name="submit"></button>
+        </form>
         
-    </iframe>
-        <h1>報表</h1>
-        <label for="sDate">開始時間</label>
-        <input type="datetime-local" name="sDate" id="sDate">
-        <label for="eDate">結束時間</label>
-        <input type="datetime-local" name="eDate" id="eDate">
+
         
-        <select name="" id="">
-            <option value="">已銷售數量</option>
-            <option value="">2</option>
-            <option value="">3</option>
-            <option value="">4</option>
-        </select>
     </div>
+    <script>
+        $("#sDate").change(function(){
+            alert("開始時間"+$("#sDate").val());
+        })
+
+        $("#eDate").change(function(){
+            alert("結束時間"+$("#eDate").val());
+        })
+    </script>
 </body>
 </html>
