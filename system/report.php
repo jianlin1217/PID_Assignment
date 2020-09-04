@@ -31,17 +31,22 @@
             <input type="datetime-local" name="eDate" id="eDate">
             
             <select name="" id="">
-                <option value="已銷售數量">已銷售數量</option>
-                <option value="庫存">庫存</option>
-                <option value="">3</option>
+                <option value="產品數量">產品數量</option>
+                <option value="總收入">總收入</option>
+                <option value=""></option>
                 <option value="">4</option>
             </select>
-            <button type="submit" id="submit" name="submit"></button>
+            <button class="btn btn-primary" type="submit" id="submit" name="submit"> 統計 </button>
         </form>
-        
-
-        
     </div>
+    <table>
+        <td>
+            <th>日期</th>
+            <th>已售出</th>
+            <th>剩餘數量</th>
+            <th></th>
+        </td>
+    </table>
     <script>
         $("#sDate").change(function(){
             alert("開始時間"+$("#sDate").val());
