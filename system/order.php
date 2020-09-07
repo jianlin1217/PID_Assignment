@@ -21,6 +21,13 @@
     <?php
         require_once("header.php");
     ?>
+    <script>
+        //清除歷史避免重複送出表單
+    if ( window.history.replaceState ) 
+    {
+        window.history.replaceState( null, null, window.location.href );
+    }
+    </script>
     <div class="container" style="margin-top:130px">
         <h1>訂單明細</h1>
         <button id="btnfin">顯示已完成訂單</button>
@@ -42,6 +49,8 @@
                 select orderId,total,orderCusId,orderDate,orderManageId,finishYN,finishDate from orderList;
                 end;
                 $result=mysqli_query($link,$askOrder);
+                //存放訂單編號
+                $oid=array();
                 $countorder=0;
                 global $countorder;
                 while($row=mysqli_fetch_assoc($result))
@@ -53,7 +62,7 @@
                     $row2=mysqli_fetch_assoc(mysqli_query($link,$getName));
             ?>
                 <tr id="detial<?=$countorder?>">
-                    <td><?=$row['orderId']?></td>
+                    <td><?php echo $row['orderId']; array_push($oid,$row['orderId']);?></td>
                     <td><?=$row2['customerName']?></td>
                     <td><?=$row['orderDate']?></td>
                     <td>
@@ -80,8 +89,12 @@
                         if($row['finishDate']==NULL)
                         {
                         ?>
-                        <button id="finish<?=$countorder?>" name="finish<?=$countorder?>">完成</button>
+                        <form action="" method="post">
+                            <button  id="finish<?=$countorder?>" name="finish<?=$countorder?>">完成</button>
+
+                        </form>
                         <?php
+
                         }
                         else
                         {
@@ -97,6 +110,48 @@
             </tbody>
         </table>
     </div>
+    <?php
+    //完成訂單
+    for($i=0;$i<$countorder;$i++)
+    {
+        // echo "finish".$i."*";
+        if(isset($_POST['finish'.$i]))
+        {
+            // echo $_POST['finish'.$i];
+            date_default_timezone_set("Asia/Taipei");
+            $now=date("Y-m-d H:i:s");
+            $finishOrder=<<<end
+            update orderList set finishDate = "$now",finishYN="Y" where orderId=$oid[$i];
+            end;
+            // echo $finishOrder;
+            mysqli_query($link,$finishOrder);
+
+            //更改商品剩餘銷售出的數量
+            //先找出哪些商品是被更改的以及更改數量
+            $finditem=<<<end
+            select itemName,itemCount from orderList as o JOIN orderDetail as od on od.orderId=o.orderId where o.orderId=$oid[$i];
+            end;
+            $result=mysqli_query($link,$finditem);
+            while($row=mysqli_fetch_assoc($result))
+            {
+                $n=$row['itemName'];
+                $c=$row['itemCount'];
+                $moditem=<<<end
+                update itemList set remainCount=remainCount-$c,saleOut=saleOut+$c where itemName="$n";
+                end;
+                echo $moditem;
+                mysqli_query($link,$moditem);
+            }
+            
+            ?>
+            <script>
+                $("#YN<?=$i?>").text("完成");
+            </script>
+            <?php
+        }
+    }
+
+    ?>
 <script>
     for(let i=0;i< <?=$countorder?>;i++)
     {
