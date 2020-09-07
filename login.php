@@ -65,7 +65,7 @@
       if ($_SESSION['nowMemberId'] == null&&$_SESSION['linkTo']==1) {
     ?>
     <script>
-      alert("請先登入以便選購！！");
+      alert("請先登入！！");
     </script>
     <?php
       $_SESSION['linkTo']=0;

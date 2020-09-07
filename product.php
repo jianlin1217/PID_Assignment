@@ -22,7 +22,7 @@ $drinkName = array();
 $drinkPrice = array();
 $drinkImg= array();
 $askCommend = <<<end
-    select itemId,drinkImg,itemPrice,itemName,remainCount from itemList;
+    select itemId,drinkImg,itemPrice,itemName,remainCount from itemList where itemState=1;
     end;
 $result = mysqli_query($link, $askCommend);
 while ($row = mysqli_fetch_assoc($result)) {

@@ -12,34 +12,32 @@ $drinkId = array();
 $drinkName = array();
 $drinkPrice = array();
 $drinkImg = array();
+$remain = array();
+$canBuy= array();
 $nowId = $_SESSION['nowMemberId'];
 //總共商品有哪些
 global $totalItem;
 //從資料庫取得 飲料id  價格   名字    
-$getBuyDB=<<<end
-select buyItemId from shopCar where buyCusId=$nowId;
-end;
-$result=mysqli_query($link,$getBuyDB);
-while($row=mysqli_fetch_assoc($result))
-{
-    array_push($drinkId,$row['buyItemId']);
-}
-// var_dump($drinkId);
-//將品項數量放入
-$totalItem = count($drinkId);
 
-for($i=0;$i<$totalItem;$i++)
-{
     $getItemDB=<<<end
-    select itemName,itemPrice,remainCount,drinkImg from itemList where itemId=$drinkId[$i]
+    select DISTINCT itemName,itemPrice,remainCount,drinkImg,buycan 
+    from itemList as i join shopCar as s on i.itemId=s.buyItemId 
+    where itemId in (select buyItemId from shopCar where buyCusId=$nowId)
     end;
+    // echo $getItemDB;
     $result=mysqli_query($link,$getItemDB);
-    $row=mysqli_fetch_assoc($result);
-    array_push($drinkName,$row['itemName']);
-    array_push($drinkPrice,$row['itemPrice']);
-    array_push($drinkImg,$row['drinkImg']);
+    while($row=mysqli_fetch_assoc($result))
+    {
+        array_push($drinkName,$row['itemName']);
+        array_push($drinkPrice,$row['itemPrice']);
+        array_push($drinkImg,$row['drinkImg']);
+        array_push($remain,$row['remainCount']);
+        array_push($canBuy,$row['buycan']);
+    }
+    // var_dump($drinkName);
+    $totalItem=count($drinkName);
+    // echo $totalItem;
     // echo $drinkName[$i]."  ".$drinkPrice[$i];
-}
 
 
 //刪除購物車品項
@@ -105,7 +103,7 @@ if(isset($_POST['buyorder']))
     values
     ($orderTotal,$nowId,$orderTotalCount,"$nowDate");
     end;
-    // echo $putorderDB;
+    echo $putorderDB;
     mysqli_query($link,$putorderDB);
 
     //將訂單放到訂單明細資料庫
@@ -166,9 +164,14 @@ if(isset($_POST['buyorder']))
 </head>
 
 <body>
-
+    
     <?php
-    require_once("header.php");
+       //檢測是不是還沒登入  非登入狀態則返回登入頁
+       if ($_SESSION['nowMemberId'] == null) {
+        $_SESSION['linkTo']=1;
+        header("location: login.php");
+    }
+    // require_once("header.php");
     for ($i = 0; $i < $totalItem; $i++) {
     ?>
         <!--網頁顯示-->
@@ -176,20 +179,40 @@ if(isset($_POST['buyorder']))
             <div class="wrapper2" id="d1">
                 <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($drinkImg[$i]);?>"alt="找不到圖片ＱＡＯ">
                 <div class="mid">
-                    <p id="name<?= $i ?>" name="dname"><?= $drinkName[$i] ?></p>
+                    <p id="name<?= $i ?>" name="dname"><?php
+                     if($canBuy[$i]=="N")
+                     echo  $drinkName[$i]."<br>(無法購買,商品不足或已下架)";
+                     else
+                     echo $drinkName[$i];
+                     ?></p>
                     <p id="price<?= $i ?>" name="price"><?= $drinkPrice[$i] ?></p>
                 </div>
             </div>
             <div class="wrapper" id="d2">
                 <div class="mid">
-                    <button class="btn btn-success" id="btnadd<?=$i?>" name="btnadd"> + </button>
+
+                    <button class="btn btn-success" 
+                    <?php
+                        // echo $canBuy[$i];
+                        //若非上架中則無法更改
+                        if($canBuy[$i]=="N")
+                        echo "disabled";
+                    ?>
+                    id="btnadd<?=$i?>" name="btnadd"> + </button>
                 </div> 
                 
                     <div style="margin-top: 80%;">
                         <p  type="text" id="itemcount<?=$i?>" name="itemcount<?=$i?>">0</p>
                     </div>
                 <div class="mid">
-                    <button class="btn btn-danger"  id="btnsub<?=$i?>"  name="btnsub"> - </button>
+                    <button class="btn btn-danger"
+                    <?php
+                        // echo $canBuy[$i];
+                        //若非上架中則無法更改
+                        if($canBuy[$i]=="N")
+                        echo "disabled";
+                    ?>
+                    id="btnsub<?=$i?>"  name="btnsub"> - </button>
                 </div>
             </div>
             <div class="wrapper" id="d3">

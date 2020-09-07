@@ -19,14 +19,19 @@ $getProduct = <<<end
     end;
 $result = mysqli_query($link, $getProduct);
 while ($row = mysqli_fetch_assoc($result)) {
-    array_push($proName, $row["itemName"]);
-    array_push($proPrice, $row["itemPrice"]);
-    array_push($proRemain, $row["remainCount"]);
-    array_push($proMeg, $row["ItemMassage"]);
-    array_push($proImgLink,$row["drinkImg"]);
-    array_push($proId, $row['itemId']);
-    array_push($procost, $row['itemmMaterial']);
-    array_push($prostate, $row['itemState']);
+    //商品不為刪除才存入
+    if($row['itemState']!=4)
+    {
+       array_push($proName, $row["itemName"]);
+        array_push($proPrice, $row["itemPrice"]);
+        array_push($proRemain, $row["remainCount"]);
+        array_push($proMeg, $row["ItemMassage"]);
+        array_push($proImgLink,$row["drinkImg"]);
+        array_push($proId, $row['itemId']);
+        array_push($procost, $row['itemmMaterial']);
+        array_push($prostate, $row['itemState']); 
+    }
+    
 }
 $_SESSION['pID'] = $proId;
 // var_dump($proName);
@@ -64,20 +69,18 @@ global $proTotal;
     require_once("header.php");
     ?>
     <div class="container" style="margin-top: 100px;">
-        <h1>商品總覽</h1>
+        <h1>商品總覽 (修改後請點重整一下確保資料狀態為最新)</h1>
         <div class="">
             <button id="btnAdd" name="btnAdd">新增</button>
             <button id="btnMod" name="btnMod">修改</button>
+            <button id="reload" name="reload">重整</button>
         </div>
+        <form action="" method="post" enctype="multipart/form-data">
         <?php
         $result = mysqli_query($link, $getProduct);
         for ($i = 0; $i < $proTotal; $i++) {
-            //商品刪除則跳過
-            if($prostate[$i]==4)
-            continue;
             $row = mysqli_fetch_assoc($result);
-        ?>
-            <form action="" method="post" enctype="multipart/form-data">
+        ?>            
                 <div class="wrapper bound" style="margin-top: 20px;">
                     <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($proImgLink[$i]); ?>" alt="ＲＲＲＲ">
                     <div>
@@ -146,11 +149,13 @@ global $proTotal;
 
                     </div>
                 </div>
-            </form>
+              
 
         <?php
         }
-        ?>
+        ?>  
+            <button id="allSend" name="allSend" style="display:none; float:right">全部修改</button>
+        </form>
     </div>
     <!-- php 程式碼區域 -->
     <?php
@@ -193,8 +198,85 @@ global $proTotal;
                     update itemList set itemPrice = $Pprice ,itemmMaterial=$Pcost,itemState=$Pstate, itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe" where itemId = $proId[$i] ;
                     end;
             }
-             echo $modify;
+            //  echo $modify;
             mysqli_query($link, $modify);
+              //若是商品改為非上架狀態,連帶改變購物車品項顯示
+              if($Pstate!=1)
+              {
+                  $deleteCar =<<<end
+                  update shopCar set buyCan="N" where buyItemId = $proId[$i];
+                  end;
+                  mysqli_query($link,$deleteCar);
+  
+              }
+              else
+              {
+                  $deleteCar =<<<end
+                  update shopCar set buyCan="Y" where buyItemId = $proId[$i];
+                  end;
+                  mysqli_query($link,$deleteCar);
+              }
+        }
+    }
+    //全部商品一起修改
+    if(isset($_POST['allSend']))
+    {
+        for ($i = 0; $i < $proTotal; $i++) {
+                //  echo "這是第 $i 項產品";
+                $Pname = $_POST['pName' . $i];
+                $Pprice = $_POST['price' . $i];
+                $Pcost = $_POST['cost' . $i];
+                $Premain = $_POST['remain' . $i];
+                $Pstate= $_POST['state' . $i];
+                $Pdescribe = $_POST['textF' . $i];
+                
+                // echo empty($_FILES["Img$i"]["name"]);
+                //圖片修改
+                //  var_dump($_FILES["Img$i"]["name"]);
+                if (empty($_FILES["Img$i"]["name"]) != 1) {
+                    $name = $_FILES["Img$i"]["name"];
+                    // echo $name . "ddd";
+                    //取得檔案資訊  ＊＊＊＊
+                    $fileName = basename($name);
+                    $fileType = pathinfo($name, PATHINFO_EXTENSION);
+                    // echo "<br>".$fileName."     ".$fileType;
+                    $allowTypes = array('jpg', 'png', 'jpeg');
+                    if (in_array($fileType, $allowTypes)) {
+                        $image = $_FILES["Img$i"]['tmp_name'];
+                        // echo $image;
+                        $imgContent = addslashes(file_get_contents($image));
+                        // echo $imgContent;
+                        //修改資料傳送資料庫
+                        $modify = <<<end
+                        update itemList set itemPrice = $Pprice,itemmMaterial=$Pcost,itemState=$Pstate , itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe",drinkImg="$imgContent" where itemId = $proId[$i] ;
+                        end;
+                    }
+                }
+                else
+                {
+                        $modify = <<<end
+                        update itemList set itemPrice = $Pprice ,itemmMaterial=$Pcost,itemState=$Pstate, itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe" where itemId = $proId[$i] ;
+                        end;
+                }
+                //  echo $modify."<br>";
+                mysqli_query($link, $modify);
+                //若是商品改為非上架狀態,連帶改變購物車品項顯示
+                if($Pstate!=1)
+                {
+                    $deleteCar =<<<end
+                    update shopCar set buyCan="N" where buyItemId = $proId[$i];
+                    end;
+                    mysqli_query($link,$deleteCar);
+    
+                }
+                else
+                {
+                    $deleteCar =<<<end
+                    update shopCar set buyCan="Y" where buyItemId = $proId[$i];
+                    end;
+                    mysqli_query($link,$deleteCar);
+                }
+            
         }
     }
     //刪除商品
@@ -206,7 +288,7 @@ global $proTotal;
             end;
             mysqli_query($link, $deleteP);
             $deleteCar =<<<end
-            delete from shopCar where buyItemId = $proId[$i]
+            update shopCar set buyCan="N" where buyItemId = $proId[$i];
             end;
             mysqli_query($link,$deleteCar);
         }
@@ -217,6 +299,10 @@ global $proTotal;
     //新增商品
     $("#btnAdd").click(function() {
         location.href = "newProduct.php";
+    })
+    //重整網頁
+    $("#reload").click(function(){
+        location.href = "products.php";
     })
 
     let flag = true;
@@ -235,6 +321,7 @@ global $proTotal;
                 $("select[name='state<?= $i ?>']").attr("disabled", false);
                 $("textarea[name='textF<?= $i ?>']").attr("disabled", false);
                 document.getElementById("btnSend<?= $i ?>").style.display = "block";
+                document.getElementById("allSend").style.display = "block";
                 document.getElementById("btnDel<?= $i ?>").style.display = "block";
                 document.getElementById("Img<?= $i ?>").style.display = "block";
             <?php
@@ -253,6 +340,7 @@ global $proTotal;
                 $("select[name='state<?= $i ?>']").attr("disabled", true);
                 $("textarea[name='textF<?= $i ?>']").attr("disabled", true);
                 document.getElementById("btnSend<?= $i ?>").style.display = "none";
+                document.getElementById("allSend").style.display = "none";
                 document.getElementById("btnDel<?= $i ?>").style.display = "none";
                 document.getElementById("Img<?= $i ?>").style.display = "none";
             <?php

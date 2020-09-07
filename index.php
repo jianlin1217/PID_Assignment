@@ -13,7 +13,7 @@ $_SESSION['itemName']=array();      //儲存商品的名稱
 $_SESSION['total'];                 //儲存總金額
 
 
-if($_SESSION['nowMemberId']!=null)
+if($_SESSION['nowMemberId']!=NULL)
 {
     $_SESSION['loginState']="登出";
     $_SESSION['loginFlag']="true";

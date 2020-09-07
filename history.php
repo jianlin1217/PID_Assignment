@@ -29,17 +29,26 @@
 </head>
 <body>
     <?php
+    //檢測是不是還沒登入  非登入狀態則返回登入頁
+    if ($_SESSION['nowMemberId'] == null) {
+        $_SESSION['linkTo']=1;
+        header("location: login.php");
+    }
+    ?>
+
+    <?php
         require_once("header.php");
     ?>
     <div class="container" style=" margin-top: 130px;">
         <h1>點選以查看明細ʕ·ᴥ·ʔ</h1>
-        <table class="table" style="width:90%;">
+        <table class="table" style="width:90%; margin-bottom: 70px">
             <thead>
                 <tr>
                     <th>訂單序號</th>
                     <th>飲品數量</th>
                     <th>總金額</th>
                     <th>日期</th>
+                    
                 </tr>
             </thead>
                 <?php
