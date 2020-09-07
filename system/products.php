@@ -6,7 +6,9 @@ $proName = array();
 $proPrice = array();
 $proRemain = array();
 $proMeg = array();
-// $proImgLink=array();
+$procost = array();
+$prostate = array();
+$proImgLink=array();
 $proId = array();
 //產品ＩＤ
 $_SESSION['pID'] = array();
@@ -21,8 +23,10 @@ while ($row = mysqli_fetch_assoc($result)) {
     array_push($proPrice, $row["itemPrice"]);
     array_push($proRemain, $row["remainCount"]);
     array_push($proMeg, $row["ItemMassage"]);
-    // array_push($proImgLink,$row["drinkImg"]);
+    array_push($proImgLink,$row["drinkImg"]);
     array_push($proId, $row['itemId']);
+    array_push($procost, $row['itemmMaterial']);
+    array_push($prostate, $row['itemState']);
 }
 $_SESSION['pID'] = $proId;
 // var_dump($proName);
@@ -68,11 +72,14 @@ global $proTotal;
         <?php
         $result = mysqli_query($link, $getProduct);
         for ($i = 0; $i < $proTotal; $i++) {
+            //商品刪除則跳過
+            if($prostate[$i]==4)
+            continue;
             $row = mysqli_fetch_assoc($result);
         ?>
             <form action="" method="post" enctype="multipart/form-data">
                 <div class="wrapper bound" style="margin-top: 20px;">
-                    <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($row["drinkImg"]); ?>" alt="ＲＲＲＲ">
+                    <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($proImgLink[$i]); ?>" alt="ＲＲＲＲ">
                     <div>
                         <input id="Img<?= $i ?>" name="Img<?= $i ?>" style="display:none; width:300px; height:30px; " type="file">
                         <div class="wrapper3 ">
@@ -87,9 +94,45 @@ global $proTotal;
 
                             </p>
                             <p>
+                                商品花費<br><br><br>
+                                <input name="cost<?= $i ?>" id="cost<?= $i ?>" disabled value="<?= $procost[$i] ?>">
+
+                            </p>
+                            <p>
                                 剩餘數量<br><br><br>
                                 <input name="remain<?= $i ?>" id="remain<?= $i ?>" disabled value="<?= $proRemain[$i] ?> ">
 
+                            </p>
+                            <p>
+                                商品狀態<br><br><br>
+                                <select name="state<?= $i ?>" id="state<?= $i ?>" disabled>
+                                        <?php
+                                            if($prostate[$i]==1)
+                                            {
+                                                ?>
+                                                <option value="1" selected>上架中</option>
+                                                <option value="2">下架中</option>
+                                                <option value="3">缺貨中</option>
+                                                <?php
+                                            }
+                                            else if($prostate[$i]==2)
+                                            {
+                                                ?>
+                                                <option value="1">上架中</option>
+                                                <option value="2" selected>下架中</option>
+                                                <option value="3">缺貨中</option>
+                                                <?php
+                                            }
+                                            else
+                                            {
+                                                ?>
+                                                <option value="1">上架中</option>
+                                                <option value="2">下架中</option>
+                                                <option value="3" selected>缺貨中</option>
+                                                <?php
+                                            }
+                                        ?>
+                                </select>
                             </p>
                         </div>
                     </div>
@@ -117,8 +160,11 @@ global $proTotal;
             //  echo "這是第 $i 項產品";
             $Pname = $_POST['pName' . $i];
             $Pprice = $_POST['price' . $i];
+            $Pcost = $_POST['cost' . $i];
             $Premain = $_POST['remain' . $i];
+            $Pstate= $_POST['state' . $i];
             $Pdescribe = $_POST['textF' . $i];
+            
             // echo empty($_FILES["Img$i"]["name"]);
             //圖片修改
             //  var_dump($_FILES["Img$i"]["name"]);
@@ -137,27 +183,27 @@ global $proTotal;
                     // echo $imgContent;
                     //修改資料傳送資料庫
                     $modify = <<<end
-                    update itemList set itemPrice = $Pprice , itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe",drinkImg="$imgContent" where itemId = $proId[$i] ;
+                    update itemList set itemPrice = $Pprice,itemmMaterial=$Pcost,itemState=$Pstate , itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe",drinkImg="$imgContent" where itemId = $proId[$i] ;
                     end;
                 }
             }
             else
             {
                     $modify = <<<end
-                    update itemList set itemPrice = $Pprice , itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe" where itemId = $proId[$i] ;
+                    update itemList set itemPrice = $Pprice ,itemmMaterial=$Pcost,itemState=$Pstate, itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe" where itemId = $proId[$i] ;
                     end;
             }
-            //  echo $modify;
+             echo $modify;
             mysqli_query($link, $modify);
         }
     }
     //刪除商品
     for ($i = 0; $i < $proTotal; $i++) {
         if (isset($_POST['btnDel' . $i])) {
-            //刪除商品
+            //刪除商品 改商品狀態為4 不會再顯示
             $deleteP = <<<end
-             delete from itemList where itemId = $proId[$i];
-             end;
+            update itemList set itemState=4 where itemId = $proId[$i] ;
+            end;
             mysqli_query($link, $deleteP);
             $deleteCar =<<<end
             delete from shopCar where buyItemId = $proId[$i]
@@ -184,7 +230,9 @@ global $proTotal;
             ?>
                 $("input[name='pName<?= $i ?>']").attr("disabled", false);
                 $("input[name='price<?= $i ?>']").attr("disabled", false);
+                $("input[name='cost<?= $i ?>']").attr("disabled", false);
                 $("input[name='remain<?= $i ?>']").attr("disabled", false);
+                $("select[name='state<?= $i ?>']").attr("disabled", false);
                 $("textarea[name='textF<?= $i ?>']").attr("disabled", false);
                 document.getElementById("btnSend<?= $i ?>").style.display = "block";
                 document.getElementById("btnDel<?= $i ?>").style.display = "block";
@@ -200,7 +248,9 @@ global $proTotal;
             ?>
                 $("input[name='pName<?= $i ?>']").attr("disabled", true);
                 $("input[name='price<?= $i ?>']").attr("disabled", true);
+                $("input[name='cost<?= $i ?>']").attr("disabled", true);
                 $("input[name='remain<?= $i ?>']").attr("disabled", true);
+                $("select[name='state<?= $i ?>']").attr("disabled", true);
                 $("textarea[name='textF<?= $i ?>']").attr("disabled", true);
                 document.getElementById("btnSend<?= $i ?>").style.display = "none";
                 document.getElementById("btnDel<?= $i ?>").style.display = "none";

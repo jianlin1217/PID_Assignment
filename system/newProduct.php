@@ -49,7 +49,9 @@ require_once("connectDB.php");
         <label for="Pname">飲品名稱</label><br>
         <input type="text" name="Pname" id="Pname" required="required"><br>
         <label for="Pprice">飲品價錢</label><br>
-        <input type="text" name="Pprice" id="Pprice" required="required" pattern="\w{1,3}"><br>
+        <input type="text" name="Pprice" id="Pprice" required="required" pattern="[1-9]{1}[0-9]{1,}"><br>
+        <label for="Pcost">飲品花費</label><br>
+        <input type="text" name="Pcost" id="Pcost" required="required" pattern="[1-9]{1}[0-9]{1,}"><br>
         <label for="Pdes">飲品描述</label><br>
         <textarea name="Pdes" id="Pdes" cols="30" rows="10" required="required"></textarea><br>
         <input class="btn btn-success" type="submit" name="new" ></input>
@@ -73,27 +75,27 @@ require_once("connectDB.php");
 
                 $n=$_POST['Pname'];
                 $p=$_POST['Pprice'];
+                $c=$_POST['Pcost'];
                 $m=$_POST['Pdes'];
-                //確認產品有無重複
+                //確認產品有無重複 且並非是刪除的狀態
                 $same=<<<end
-                select itemId from itemList where itemName = "$n";
+                select itemName from itemList where itemName = "$n" and itemState!=4;
                 end;
                 // echo $same;
                 $result=mysqli_query($link,$same);
                 $row=mysqli_fetch_assoc($result);
-
-                if(true)
+                // var_dump($row);
+                if($row==NULL)
                 {
-
                 // 將產品資料上傳到資料庫 
                 // $re=<<<end
                 //  update itemList set drinkImg = '$imgContent' where itemId = 4;
                 //  end;
                 $addProduct=<<<end
                 insert into itemList
-                (itemName,itemPrice,ItemMassage,drinkImg)
+                (itemName,itemPrice,itemmMaterial,ItemMassage,drinkImg)
                 values
-                ("$n",$p,"$m","$imgContent");
+                ("$n",$p,$c,"$m","$imgContent");
                 end;
                 // echo $addProduct;
                 $result=mysqli_query($link,$addProduct);
