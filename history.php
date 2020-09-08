@@ -48,12 +48,12 @@
                     <th>飲品數量</th>
                     <th>總金額</th>
                     <th>日期</th>
-                    
+                    <th>是否送達</th>
                 </tr>
             </thead>
                 <?php
                     $getHis=<<<end
-                    select hisListId,hisToatl,hisItemCount,hisDate from hisList where whoBuyId=$nowId;
+                    select hisListId,hisToatl,hisItemCount,hisDate,finishYN from hisList as h JOIN orderList as o on h.hisListId=o.orderId where whoBuyId=$nowId;
                     end;
                     // echo $getHis;
                     $countHis=0;
@@ -69,6 +69,7 @@
                         <td><?=$row['hisItemCount']?></td>
                         <td><?=$row['hisToatl']?></td>
                         <td><?=$row['hisDate']?></td>
+                        <td><?=$row['finishYN']?></td>
                     </tr>
                
                 </tbody> 

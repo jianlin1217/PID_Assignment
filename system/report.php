@@ -102,8 +102,9 @@ require_once("connectDB.php");
                         where o.orderDate between "$stime" and "$etime" 
                         GROUP BY i.itemName,remainCount,saleOut,itemState
                         end;
-                        echo "開始日期:" . $stime . "~結束日期:" . $etime;
-                        
+                        ?>
+                        <h2 style="text-align:center"><?= "開始日期:" . $stime . "~結束日期:" . $etime; ?></h2>
+                        <?php
                     } else {
                         $getreport = <<<end
                         select itemName,remainCount,saleOut,itemState from itemList;
@@ -230,6 +231,9 @@ require_once("connectDB.php");
 
                 } else if ($_POST['type'] == "支出表") {
                     if ($etime != NULL && $stime != NULL) {
+                        ?>
+                        <h2 style="text-align:center"><?= "開始日期:" . $stime . "~結束日期:" . $etime; ?></h2>
+                        <?php
                         //找出品項的花費
                         $getreport = <<<end
                         select DISTINCT i.itemName,sum(itemcount)*i.itemmMaterial as ctotal
