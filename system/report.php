@@ -39,12 +39,14 @@ require_once("connectDB.php");
                 <option value="收入表">收入表</option>
                 <option value="支出表">支出表</option>
             </select>
+
+            <select name="daytype" id="daytype">
+                <option value="0">請選擇</option>
+                <option value="1">1天</option>
+                <option value="7">7天</option>
+                <option value="30">30天</option>
+            </select>
             <button class="btn btn-primary" type="submit" id="submit" name="submit"> 統計 </button>
-            <div>
-                <button class="btn btn-success" id="day" name="day">以日為單位</button>
-                <button class="btn btn-success" id="month" name="month">以月為單位</button>
-                <button class="btn btn-success" id="year" name="year">以年為單位</button>
-            </div>
         </form>
 
     </div>
@@ -53,11 +55,32 @@ require_once("connectDB.php");
             <?php
             //顯示報表
             if (isset($_POST['submit'])) {
-
-                // echo $_POST['sDate'] . "   " . $_POST['eDate'] . "<br>" . $_POST['type'];
+                
+                // echo $_POST['daytype'];
                 $stime = str_replace("T", " ", $_POST['sDate']);
                 $etime = str_replace("T", " ", $_POST['eDate']);
                 if ($_POST['type'] == "產品數量") {
+                    if($_POST['daytype']!=0)
+                    {
+                        date_default_timezone_set("Asia/Taipei");
+                        $now=date("Y-m-d");
+                        switch($_POST['daytype'])
+                        {
+                            case 1:
+                                $stime=$now;
+                                $etime=date("Y-m-d",strtotime("+1 day"));
+                            break;
+                            case 7:
+                                $stime=$now;
+                                $etime=date("Y-m-d",strtotime("+7 day"));
+                            break;
+                            case 30:
+                                $stime=$now;
+                                $etime=date("Y-m-d",strtotime("+30 day"));
+                            break;
+                        }
+                        // echo $stime." ".$etime;
+                    }
                     if ($etime != NULL && $stime != NULL) {
                         $getreport = <<<end
                         select DISTINCT i.itemName,remainCount,saleOut,itemState,sum(od.itemCount) 
@@ -238,34 +261,34 @@ require_once("connectDB.php");
                     //顯示圖表
                 ?>
                     <p style="text-align:center; font-size:30px"><?= "總支出為:" . $all ?></p>
-                        <canvas id="myChart" width="400" height="400"> </canvas>
-                        <script>
-                            var ctx = document.getElementById('myChart').getContext('2d');
-                            var myChart = new Chart(ctx, {
-                                type: 'bar',
-                                data: {
-                                    //花費
-                                    labels: <?= $pName ?>,
-                                    datasets: [{
-                                        label: "物料花費",
+                    <canvas id="myChart" width="400" height="400"> </canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                //花費
+                                labels: <?= $pName ?>,
+                                datasets: [{
+                                    label: "物料花費",
 
-                                        data: <?= $c ?>,
-                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                        borderColor: 'rgba(54, 162, 235, 1)',
-                                        borderWidth: 1
+                                    data: <?= $c ?>,
+                                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
                                     }]
-                                },
-                                options: {
-                                    scales: {
-                                        yAxes: [{
-                                            ticks: {
-                                                beginAtZero: true
-                                            }
-                                        }]
-                                    }
                                 }
-                            });
-                        </script>
+                            }
+                        });
+                    </script>
                     <canvas id="myChart2" width="400" height="400"> </canvas>
                     <script>
                         var ctx = document.getElementById('myChart2').getContext('2d');
@@ -294,11 +317,15 @@ require_once("connectDB.php");
                                     }]
                                 }
                             }
-                        });ß
+                        });
                     </script>
             <?php
-
                 }
+            }
+            //以1天 7天 30天為單位的報表
+            if (isset($_POST['day'])) {
+            } else if (isset($_POST['7day'])) {
+            } else if (isset($_POST['month'])) {
             }
             ?>
 
