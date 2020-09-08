@@ -3,10 +3,6 @@ session_start();
 require_once("connectDB.php");
 
 
-//抓出訂單資料
-if (isset($_POST['submit'])) {
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,14 +39,14 @@ if (isset($_POST['submit'])) {
                 <option value="收入表">收入表</option>
                 <option value="支出表">支出表</option>
             </select>
-            <button class="btn btn-primary" type="submit" id="submit" name="submit"> 統計 </button> 
+            <button class="btn btn-primary" type="submit" id="submit" name="submit"> 統計 </button>
             <div>
-            <button class="btn btn-success" id="day" name="day">以日為單位</button>
-            <button class="btn btn-success" id="month" name="month">以月為單位</button>
-            <button class="btn btn-success" id="year" name="year">以年為單位</button>
+                <button class="btn btn-success" id="day" name="day">以日為單位</button>
+                <button class="btn btn-success" id="month" name="month">以月為單位</button>
+                <button class="btn btn-success" id="year" name="year">以年為單位</button>
             </div>
         </form>
-       
+
     </div>
     <div class="container">
         <table class="table">
@@ -98,11 +94,11 @@ if (isset($_POST['submit'])) {
                             <td><?= $row['remainCount'] ?></td>
                             <td>
                                 <?php
-                                if ($row['sum(od.itemCount)'] == NULL&&$etime != NULL && $stime != NULL)
+                                if ($row['sum(od.itemCount)'] == NULL && $etime != NULL && $stime != NULL)
                                     echo "--";
-                                else if($etime != NULL && $stime != NULL)
+                                else if ($etime != NULL && $stime != NULL)
                                     echo $row['sum(od.itemCount)'];
-                                else 
+                                else
                                     echo $row['saleOut'];
                                 ?></td>
                             <td>
@@ -120,170 +116,194 @@ if (isset($_POST['submit'])) {
                     }
                 } else if ($_POST['type'] == "收入表") {
                     if ($etime != NULL && $stime != NULL) {
-                        ?>
-                        <h2 style="text-align:center"><?= "開始日期:" . $stime . "~結束日期:" . $etime;?></h2>
-                        <?php
+                    ?>
+                        <h2 style="text-align:center"><?= "開始日期:" . $stime . "~結束日期:" . $etime; ?></h2>
+                    <?php
                         $getreport = <<<end
-                        select DISTINCT i.itemName,sum(total),sum(itemcount),sum(itemcount)*i.itemPrice as itotal
-                        from orderList as o JOIN itemList as i JOIN orderDetail as od on o.orderId=od.orderId and i.itemName=od.itemName
-                        where o.finishYN='Y'AND o.finishDate between "$stime" AND "$etime" GROUP BY i.itemName,i.itemPrice
-                        end;
-                        // echo $getreport;
-                        $result = mysqli_query($link, $getreport);
-                        $proName= array();
-                        $prostotal=array();
-                        $proscount=array();
-                        $all=0;
-                         while($row= mysqli_fetch_assoc($result))
-                         {
-                            array_push($proName,$row['itemName']);
-                            array_push($prostotal,$row['itotal']);
-                            array_push($proscount,$row['sum(itemcount)']);
-                            $all+=$row['itotal'];
-                         }
-                         $name=json_encode($proName);
-                         $price=json_encode($prostotal);
-                         $count=json_encode($proscount);
-                         ?>
-                         <p style="text-align:center; font-size:30px"><?="總收入為:".$all?></p>
-                         <canvas id="myChart" width="400" height="400">
- 
-                         </canvas>
-                         <script>
-                             var ctx = document.getElementById('myChart').getContext('2d');
-                             var myChart = new Chart(ctx, {
-                                 type: 'bar',
-                                 data: {
-                                     //銷售
-                                     labels:  <?=$name ?> ,
-                                     datasets: [{
-                                         label:"銷售金額",
-                                         
-                                         data: <?=$price?>,
-                                         backgroundColor: 
-                                             'rgba(54, 162, 235, 0.2)'
-                                         ,
-                                         borderColor: 
-                                             'rgba(54, 162, 235, 1)',
-                                         borderWidth: 1
-                                     },
-                                     {
-                                        label:"銷售數量",
-                                         
-                                         data: <?=$count?>,
-                                         backgroundColor: 
-                                             'rgba(225, 198, 175, 0.2)'
-                                         ,
-                                         borderColor: 
-                                             'rgba(225, 198, 175, 1)',
-                                         borderWidth: 1
-                                     }
-                                     
-                                     ]
-                                 },
-                                 options: {
-                                     scales: {
-                                         yAxes: [{
-                                             ticks: {
-                                                 beginAtZero: true
-                                             }
-                                         }]
-                                     }
-                                 }
-                             });
-                         </script>
-            <?php
-
+                            select DISTINCT i.itemName,sum(total),sum(itemcount),sum(itemcount)*i.itemPrice as itotal
+                            from orderList as o JOIN itemList as i JOIN orderDetail as od on o.orderId=od.orderId and i.itemName=od.itemName
+                            where o.finishYN='Y'AND o.finishDate between "$stime" AND "$etime" GROUP BY i.itemName,i.itemPrice
+                            end;
                     } else {
                         $getreport = <<<end
-                        select DISTINCT i.itemName,sum(itemcount),sum(itemcount)*i.itemPrice as itotal
-                        from orderList as o JOIN itemList as i JOIN orderDetail as od on o.orderId=od.orderId and i.itemName=od.itemName
-                        where o.finishYN='Y' GROUP BY i.itemName,i.itemPrice
-                        end;
-                        // echo $getreport;
-                        $result = mysqli_query($link, $getreport);
-                        $proName= array();
-                        $prostotal=array();
-                        $proscount=array();
-                        $all=0;
-                         while($row= mysqli_fetch_assoc($result))
-                         {
-                            array_push($proName,$row['itemName']);
-                            array_push($prostotal,$row['itotal']);
-                            array_push($proscount,$row['sum(itemcount)']);
-                            $all+=$row['itotal'];
-                         }
-                         $name=json_encode($proName);
-                         $price=json_encode($prostotal);
-                         $count=json_encode($proscount);
-                         ?>
-                         <p style="text-align:center; font-size:30px"><?="總收入為:".$all?></p>
-                         <canvas id="myChart" width="400" height="400">
- 
-                         </canvas>
-                         <script>
-                             var ctx = document.getElementById('myChart').getContext('2d');
-                             var myChart = new Chart(ctx, {
-                                 type: 'bar',
-                                 data: {
-                                     //銷售
-                                     labels:  <?=$name ?> ,
-                                     datasets: [{
-                                         label:"銷售金額",
-                                         
-                                         data: <?=$price?>,
-                                         backgroundColor: 
-                                             'rgba(54, 162, 235, 0.2)'
-                                         ,
-                                         borderColor: 
-                                             'rgba(54, 162, 235, 1)',
-                                         borderWidth: 1
-                                     },
-                                     {
-                                        label:"銷售數量",
-                                         
-                                         data: <?=$count?>,
-                                         backgroundColor: 
-                                             'rgba(225, 198, 175, 0.2)'
-                                         ,
-                                         borderColor: 
-                                             'rgba(225, 198, 175, 1)',
-                                         borderWidth: 1
-                                     }
-                                     
-                                     ]
-                                 },
-                                 options: {
-                                     scales: {
-                                         yAxes: [{
-                                             ticks: {
-                                                 beginAtZero: true
-                                             }
-                                         }]
-                                     }
-                                 }
-                             });
-                         </script>
-                        <?php
+                            select DISTINCT i.itemName,sum(itemcount),sum(itemcount)*i.itemPrice as itotal
+                            from orderList as o JOIN itemList as i JOIN orderDetail as od on o.orderId=od.orderId and i.itemName=od.itemName
+                            where o.finishYN='Y' GROUP BY i.itemName,i.itemPrice
+                            end;
                     }
-                } else if ($_POST['type'] == "支出表") 
-                {
+                    // echo $getreport;
+                    $result = mysqli_query($link, $getreport);
+                    $proName = array();
+                    $prostotal = array();
+                    $proscount = array();
+                    $all = 0;
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        array_push($proName, $row['itemName']);
+                        array_push($prostotal, $row['itotal']);
+                        array_push($proscount, $row['sum(itemcount)']);
+                        $all += $row['itotal'];
+                    }
+                    $name = json_encode($proName);
+                    $price = json_encode($prostotal);
+                    $count = json_encode($proscount);
+                    ?>
+                    <p style="text-align:center; font-size:30px"><?= "總收入為:" . $all ?></p>
+                    <canvas id="myChart" width="400" height="400">
 
-                } 
-                else 
-                {
+                    </canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                //銷售
+                                labels: <?= $name ?>,
+                                datasets: [{
+                                        label: "銷售金額",
+
+                                        data: <?= $price ?>,
+                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: "銷售數量",
+
+                                        data: <?= $count ?>,
+                                        backgroundColor: 'rgba(225, 198, 175, 0.2)',
+                                        borderColor: 'rgba(225, 198, 175, 1)',
+                                        borderWidth: 1
+                                    }
+
+                                ]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                <?php
+
+                } else if ($_POST['type'] == "支出表") {
+                    if ($etime != NULL && $stime != NULL) {
+                        //找出品項的花費
+                        $getreport = <<<end
+                        select DISTINCT i.itemName,sum(itemcount)*i.itemmMaterial as ctotal
+                        from orderList as o JOIN itemList as i JOIN orderDetail as od on o.orderId=od.orderId and i.itemName=od.itemName
+                        where o.finishYN='Y'AND o.finishDate between "$stime" AND "$etime"
+                        GROUP BY i.itemName,i.itemmMaterial
+                        end;
+                    } else {
+                        $getreport = <<<end
+                        select DISTINCT i.itemName,sum(itemcount)*i.itemmMaterial as ctotal
+                        from orderList as o JOIN itemList as i JOIN orderDetail as od on o.orderId=od.orderId and i.itemName=od.itemName
+                        where o.finishYN='Y' 
+                        GROUP BY i.itemName,i.itemmMaterial
+                        end;
+                    }
+                    //人事成本 扣掉不再職位上的
+                    $getmemberreport = <<<end
+                    SELECT mr.rankSalary,m.memberName 
+                    from memberList as m JOIN mRank as mr on m.rankId=mr.rankId 
+                    where memberYN="Y";
+                    end;
+                    $proName = array();
+                    $cost = array();
+                    $memName = array();
+                    $memcost = array();
+                    $all = 0;
+                    //將品項支出放入陣列
+                    $result1 = mysqli_query($link, $getreport);
+                    $result2 = mysqli_query($link, $getmemberreport);
+                    while ($row = mysqli_fetch_assoc($result1)) {
+                        array_push($proName, $row['itemName']);
+                        array_push($cost, $row['ctotal']);
+                        $all += $row['ctotal'];
+                    }
+                    while ($row = mysqli_fetch_assoc($result2)) {
+                        array_push($memName, $row['memberName']);
+                        array_push($memcost, $row['rankSalary']);
+                        $all += $row['rankSalary'];
+                    }
+                    $pName = json_encode($proName);
+                    $mName = json_encode($memName);
+                    $c = json_encode($cost);
+                    $mc = json_encode($memcost);
+                    //顯示圖表
+                ?>
+                    <p style="text-align:center; font-size:30px"><?= "總支出為:" . $all ?></p>
+                        <canvas id="myChart" width="400" height="400"> </canvas>
+                        <script>
+                            var ctx = document.getElementById('myChart').getContext('2d');
+                            var myChart = new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    //花費
+                                    labels: <?= $pName ?>,
+                                    datasets: [{
+                                        label: "物料花費",
+
+                                        data: <?= $c ?>,
+                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                        </script>
+                    <canvas id="myChart2" width="400" height="400"> </canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart2').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                //花費
+                                labels: <?= $mName ?>,
+                                datasets: [{
+                                        label: "人事花費",
+
+                                        data: <?= $mc ?>,
+                                        backgroundColor: 'rgba(225, 198, 175, 0.2)',
+                                        borderColor: 'rgba(225, 198, 175, 1)',
+                                        borderWidth: 1
+                                    }
+
+                                ]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });ß
+                    </script>
+            <?php
 
                 }
-                // echo $getreport;
             }
             ?>
 
         </table>
     </div>
-
-    <script>
-
-    </script>
 </body>
 
 </html>
