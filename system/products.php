@@ -171,9 +171,9 @@ global $proTotal;
             $Pdescribe = $_POST['textF' . $i];
             //找出原本數量為零的
             $findremain0=<<<end
-            select remainCount from itemList where itemName="$Pname";
+            select remainCount from itemList where itemId = $proId[$i];
             end;
-            echo $findremain0;
+            // echo $findremain0;
             $row0=mysqli_fetch_assoc(mysqli_query($link,$findremain0));
             // echo empty($_FILES["Img$i"]["name"]);
             //圖片修改
@@ -230,7 +230,7 @@ global $proTotal;
               if($row0['remainCount']==0)
               {
                 $enough=<<<end
-                update itemList set itemState=2 where remainCount >0;
+                update itemList set itemState=2 where remainCount >0  and itemName="$Pname";
                 end;
                 mysqli_query($link,$enough);
               }
@@ -250,7 +250,7 @@ global $proTotal;
                 $Pdescribe = $_POST['textF' . $i];
                  //找出原本數量為零的
                 $findremain0=<<<end
-                select remainCount from itemList where itemName="$Pname";
+                select remainCount from itemList where itemId = $proId[$i];
                 end;
                 // echo $findremain0;
                 $row0=mysqli_fetch_assoc(mysqli_query($link,$findremain0));
@@ -312,7 +312,7 @@ global $proTotal;
                 {
                     // echo "OAO<br>";
                     $enough=<<<end
-                    update itemList set itemState=2 where remainCount >0 and itemName="$Pname";
+                    update itemList set itemState=2 where remainCount >0 and buyItemId = $proId[$i];
                     end;
                     mysqli_query($link,$enough);
                 }

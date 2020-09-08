@@ -129,15 +129,15 @@
             //更改商品剩餘銷售出的數量
             //先找出哪些商品是被更改的以及更改數量
             $finditem=<<<end
-            select itemName,itemCount from orderList as o JOIN orderDetail as od on od.orderId=o.orderId where o.orderId=$oid[$i];
+            select itemId,itemCount from orderList as o JOIN orderDetail as od on od.orderId=o.orderId where o.orderId=$oid[$i];
             end;
             $result=mysqli_query($link,$finditem);
             while($row=mysqli_fetch_assoc($result))
             {
-                $n=$row['itemName'];
+                $i=$row['itemId'];
                 $c=$row['itemCount'];
                 $moditem=<<<end
-                update itemList set remainCount=remainCount-$c,saleOut=saleOut+$c where itemName="$n";
+                update itemList set remainCount=remainCount-$c,saleOut=saleOut+$c where itemId=$i;
                 end;
                 echo $moditem;
                 mysqli_query($link,$moditem);
