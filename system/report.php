@@ -59,28 +59,42 @@ require_once("connectDB.php");
                 // echo $_POST['daytype'];
                 $stime = str_replace("T", " ", $_POST['sDate']);
                 $etime = str_replace("T", " ", $_POST['eDate']);
-                if ($_POST['type'] == "產品數量") {
-                    if($_POST['daytype']!=0)
+                if($_POST['daytype']!=0)
+                {
+                    date_default_timezone_set("Asia/Taipei");
+                    $now=date("Y-m-d");
+                    $post;
+                    switch($_POST['daytype'])
                     {
-                        date_default_timezone_set("Asia/Taipei");
-                        $now=date("Y-m-d");
-                        switch($_POST['daytype'])
-                        {
-                            case 1:
-                                $stime=$now;
-                                $etime=date("Y-m-d",strtotime("+1 day"));
-                            break;
-                            case 7:
-                                $stime=$now;
-                                $etime=date("Y-m-d",strtotime("+7 day"));
-                            break;
-                            case 30:
-                                $stime=$now;
-                                $etime=date("Y-m-d",strtotime("+30 day"));
-                            break;
-                        }
-                        // echo $stime." ".$etime;
+                        case 1:
+                            $stime=$now;
+                            $etime=date("Y-m-d",strtotime("+1 day"));
+                            $post="日報表";
+                        break;
+                        case 7:
+                            $w=date("w");
+                            $w--;
+                            $wd=7-$w;
+                            $stime=date("Y-m-d",strtotime("-$w day"));
+                            $etime=date("Y-m-d",strtotime("+$wd day"));
+                            $post="週報表";
+                        break;
+                        case 30:
+                            $stime=date("Y-m-01");
+                            $etime=date("Y-m-01",strtotime("+1 month"));
+                            $post="月報表";
+                        break;
                     }
+                    
+                    ?>
+                    <p style="text-align: center; font-size:30px">
+                    <?php
+                        echo $post;
+                    ?>
+                    </p>
+                    <?php
+                }
+                if ($_POST['type'] == "產品數量") {
                     if ($etime != NULL && $stime != NULL) {
                         $getreport = <<<end
                         select DISTINCT i.itemName,remainCount,saleOut,itemState,sum(od.itemCount) 
@@ -89,6 +103,7 @@ require_once("connectDB.php");
                         GROUP BY i.itemName,remainCount,saleOut,itemState
                         end;
                         echo "開始日期:" . $stime . "~結束日期:" . $etime;
+                        
                     } else {
                         $getreport = <<<end
                         select itemName,remainCount,saleOut,itemState from itemList;
@@ -241,6 +256,7 @@ require_once("connectDB.php");
                     $memName = array();
                     $memcost = array();
                     $all = 0;
+                    $mall=0;
                     //將品項支出放入陣列
                     $result1 = mysqli_query($link, $getreport);
                     $result2 = mysqli_query($link, $getmemberreport);
@@ -252,8 +268,23 @@ require_once("connectDB.php");
                     while ($row = mysqli_fetch_assoc($result2)) {
                         array_push($memName, $row['memberName']);
                         array_push($memcost, $row['rankSalary']);
-                        $all += $row['rankSalary'];
+                        $mall += $row['rankSalary'];
                     }
+                    //看報表除以天數
+                    if($etime != NULL && $stime != NULL)
+                    {
+                        //一天員工花費
+                        $mall/=30;
+                        (int)$mall*=((strtotime($etime) -strtotime($stime))/(60*60*24));
+                        for($i=0;$i<count($memcost);$i++)
+                        {
+                            $memcost[$i]=(int)($memcost[$i]/30);
+                            $memcost[$i]*=((strtotime($etime) -strtotime($stime))/(60*60*24));
+                            // echo $memcost[$i]."<br>";
+                        }
+                    }
+                    
+                    $all+=(int)$mall;
                     $pName = json_encode($proName);
                     $mName = json_encode($memName);
                     $c = json_encode($cost);
