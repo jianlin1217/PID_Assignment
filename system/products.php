@@ -169,7 +169,12 @@ global $proTotal;
             $Premain = $_POST['remain' . $i];
             $Pstate= $_POST['state' . $i];
             $Pdescribe = $_POST['textF' . $i];
-            
+            //找出原本數量為零的
+            $findremain0=<<<end
+            select remainCount from itemList where itemName="$Pname";
+            end;
+            echo $findremain0;
+            $row0=mysqli_fetch_assoc(mysqli_query($link,$findremain0));
             // echo empty($_FILES["Img$i"]["name"]);
             //圖片修改
             //  var_dump($_FILES["Img$i"]["name"]);
@@ -198,7 +203,6 @@ global $proTotal;
                     update itemList set itemPrice = $Pprice ,itemmMaterial=$Pcost,itemState=$Pstate, itemName = "$Pname" , remainCount = $Premain ,ItemMassage = "$Pdescribe" where itemId = $proId[$i] ;
                     end;
             }
-            //  echo $modify;
             mysqli_query($link, $modify);
               //若是商品改為非上架狀態,連帶改變購物車品項顯示
               if($Pstate!=1)
@@ -222,6 +226,15 @@ global $proTotal;
               end;
             //   echo $notenough;
               mysqli_query($link,$notenough);
+              //商品數量大於零且原本等於零則自動變為下架中
+              if($row0['remainCount']==0)
+              {
+                $enough=<<<end
+                update itemList set itemState=2 where remainCount >0;
+                end;
+                mysqli_query($link,$enough);
+              }
+               
         }
     }
     //全部商品一起修改
@@ -235,7 +248,12 @@ global $proTotal;
                 $Premain = $_POST['remain' . $i];
                 $Pstate= $_POST['state' . $i];
                 $Pdescribe = $_POST['textF' . $i];
-                
+                 //找出原本數量為零的
+                $findremain0=<<<end
+                select remainCount from itemList where itemName="$Pname";
+                end;
+                // echo $findremain0;
+                $row0=mysqli_fetch_assoc(mysqli_query($link,$findremain0));
                 // echo empty($_FILES["Img$i"]["name"]);
                 //圖片修改
                 //  var_dump($_FILES["Img$i"]["name"]);
@@ -288,6 +306,16 @@ global $proTotal;
                 end;
                 // echo $notenough;
                 mysqli_query($link,$notenough);
+                 //商品數量大於零且原本等於零則自動變為下架中
+                //  echo $row0['remainCount']."<br>";
+                if($row0['remainCount']==0)
+                {
+                    // echo "OAO<br>";
+                    $enough=<<<end
+                    update itemList set itemState=2 where remainCount >0 and itemName="$Pname";
+                    end;
+                    mysqli_query($link,$enough);
+                }
             
         }
     }

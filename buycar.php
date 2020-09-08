@@ -171,7 +171,7 @@ if(isset($_POST['buyorder']))
         $_SESSION['linkTo']=1;
         header("location: login.php");
     }
-    // require_once("header.php");
+    require_once("header.php");
     for ($i = 0; $i < $totalItem; $i++) {
     ?>
         <!--網頁顯示-->

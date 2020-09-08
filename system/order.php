@@ -144,9 +144,10 @@
             }
             //更改商品數量小於零的商品為缺貨中
             $notenough=<<<end
-            update itemList set itemState=3 where remainCount < 0;
+            update itemList set itemState=3 where remainCount <=0;
             end;
             mysqli_query($link,$notenough);
+            
             ?>
             <script>
                 $("#YN<?=$i?>").text("完成");
