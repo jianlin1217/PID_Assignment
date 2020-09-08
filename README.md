@@ -133,8 +133,13 @@ $_POST無法抓到值
 # 0908 V7.6 報表快速顯示 分為今日今週本月基準
 支出依照區間天數除掉計算
 
-
-
+# 圖片
+購物車
+![image](https://github.com/jianlin1217/PID_Assignment/blob/master/img/localhost_8888_PID_Assignment_PID_Assignment_buycar.php.png)
+商品選購
+![image](https://github.com/jianlin1217/PID_Assignment/blob/master/img/localhost_8888_PID_Assignment_PID_Assignment_product.php.png)
+商品修改
+![image](https://github.com/jianlin1217/PID_Assignment/blob/master/img/localhost_8888_PID_Assignment_PID_Assignment_system_products.php.png)
 
 ### 待改進
 - [ ]訂單要新增可讓管理員負責 指定負責
