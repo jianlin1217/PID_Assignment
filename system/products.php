@@ -216,6 +216,12 @@ global $proTotal;
                   end;
                   mysqli_query($link,$deleteCar);
               }
+              //更改商品數量小於零的商品為缺貨中
+              $notenough=<<<end
+              update itemList set itemState=3 where remainCount <=0;
+              end;
+            //   echo $notenough;
+              mysqli_query($link,$notenough);
         }
     }
     //全部商品一起修改
@@ -276,6 +282,12 @@ global $proTotal;
                     end;
                     mysqli_query($link,$deleteCar);
                 }
+                //更改商品數量小於零的商品為缺貨中
+                $notenough=<<<end
+                update itemList set itemState=3 where remainCount <=0;
+                end;
+                // echo $notenough;
+                mysqli_query($link,$notenough);
             
         }
     }
