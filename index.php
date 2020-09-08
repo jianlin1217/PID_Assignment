@@ -57,6 +57,9 @@ $totalItem = count($drinkName);
 
 <body>
     <?php require_once("header.php");?>
+    <div class="container" style="margin-top:350px">
+        <h1>歡迎來到熊甜蜜 ʕ > ᴥ < ʔ </h1>
+    </div>
     <?php require_once("footer.php");?>
     <script>
         //叫出登入畫面

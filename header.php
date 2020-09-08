@@ -5,7 +5,7 @@
             <!-- Links -->
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">商品介紹</a>
+                    <a class="nav-link" href="productInfo.php">商品介紹</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="product.php">商品選購</a>
