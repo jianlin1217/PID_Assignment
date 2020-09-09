@@ -3,9 +3,9 @@ session_start();
 //連接資料庫
 require_once("connectDB.php");
 //存放用SESSION
-$_SESSION['NowLogin'];     //現在登入的是誰
-$_SESSION['nowMemberId'];  //現在登入的id
-$_SESSION['loginState']="登入";     //登入登出鈕
+$_SESSION['NowLogin'];              //現在登入的是誰
+$_SESSION['nowMemberId'];           //現在登入的id
+$_SESSION['loginState']="登入";     //登入 登出鈕
 $_SESSION['loginFlag']="false";     //判斷是不是登入以顯示購物車以及歷史明細
 $_SESSION['itemCount']=array();     //儲存對應的商品數量
 $_SESSION['itemPrice']=array();     //儲存商品的金額
@@ -13,32 +13,15 @@ $_SESSION['itemName']=array();      //儲存商品的名稱
 $_SESSION['total'];                 //儲存總金額
 
 
+
+//若是id不為空(代表有人登入  所以將登入登出鈕改成登出)
 if($_SESSION['nowMemberId']!=NULL)
 {
     $_SESSION['loginState']="登出";
     $_SESSION['loginFlag']="true";
 }
-//
-$drinkName = array();
-$drinkPrice = array();
-$canBuy = 0;
 
-//取得飲料id  價格   名字  數量  
-$askCommend = <<<end
-    select itemId,itemPrice,itemName,remainCount from itemList;
-    end;
-$result = mysqli_query($link, $askCommend);
-while ($row = mysqli_fetch_assoc($result)) {
-    array_push($drinkName, $row['itemName']);
-    array_push($drinkPrice, $row['itemPrice']);
-}
-//將品項金額放入
-$_SESSION['itemPrice']=$drinkPrice;
-$_SESSION['itemName']=$drinkName;
 
-//總共商品有哪些
-global $totalItem;
-$totalItem = count($drinkName);
 
 ?>
 <!DOCTYPE html>
@@ -62,8 +45,9 @@ $totalItem = count($drinkName);
     </div>
     <?php require_once("footer.php");?>
     <script>
-        //叫出登入畫面
+        //叫出登入畫面 
         $("#login").click(function() {
+            // alert($("#login").text());
             document.location.href='login.php';
         })
 
@@ -86,18 +70,6 @@ $totalItem = count($drinkName);
         <?php
             }
         ?>
-
-        //購物車明細顯示
-        $("#addbuycar").click(function(){
-           for(j=0;j< <?=$totalItem?>;j++) 
-            {
-                let putcount="itemcount"+j;
-                // alert(putcount);
-                // alert($("#"+putcount).text());
-                array_push($_SESSION['itemCount']);
-            }
-           location.href="buycar.php";
-        })
 
     </script>
 </body>

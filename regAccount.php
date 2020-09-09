@@ -78,7 +78,7 @@ require("connectDB.php");
                     select customerAccount from customerList where customerAccount="$cAct";
                     end;
             // echo mysqli_query($link,$sameAsk)."123456";
-            var_dump(mysqli_fetch_assoc(mysqli_query($link,$sameAsk)));
+            // var_dump(mysqli_fetch_assoc(mysqli_query($link,$sameAsk)));
 
             //若SQL請求有值代表已有重複的帳號存在
             if (mysqli_fetch_assoc(mysqli_query($link,$sameAsk))!= null) {

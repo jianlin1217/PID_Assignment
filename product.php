@@ -5,9 +5,9 @@ require_once("connectDB.php");
 //選購者添加到購物車的品項
 $_SESSION['wBuyItem'] = array();
 $_SESSION['wItemPrice'] = array();
-$_SESSION['wItemId']=array();
+$_SESSION['wItemId'] = array();
 //判定是不是導向過去登入畫面
-$_SESSION['linkTo']=0;
+$_SESSION['linkTo'] = 0;
 
 if ($_SESSION['nowMemberId'] != null) {
     $_SESSION['loginState'] = "登出";
@@ -20,7 +20,8 @@ $nowId = $_SESSION['nowMemberId'];
 $drinkId = array();
 $drinkName = array();
 $drinkPrice = array();
-$drinkImg= array();
+$drinkImg = array();
+//要為上架狀態中的才會取出來
 $askCommend = <<<end
     select itemId,drinkImg,itemPrice,itemName,remainCount from itemList where itemState=1;
     end;
@@ -29,50 +30,11 @@ while ($row = mysqli_fetch_assoc($result)) {
     array_push($drinkId, $row['itemId']);
     array_push($drinkName, $row['itemName']);
     array_push($drinkPrice, $row['itemPrice']);
-    array_push($drinkImg,$row['drinkImg']);
+    array_push($drinkImg, $row['drinkImg']);
 }
 //總共商品有哪些
 global $totalItem;
 $totalItem = count($drinkName);
-//將商品放到購物車 並且存到資料庫中
-for ($i = 0; $i < $totalItem; $i++) {
-    //變數值
-    $temp = "btnBuy$i";
-    if (isset($_POST[$temp])) {
-        //確認無重複擺放品項
-        $flag=true;
-        $buysameDB=<<<end
-        select buyItemId from shopCar where buyCusId = $nowId;
-        end;
-        $result=mysqli_query($link,$buysameDB);
-        while($row=mysqli_fetch_assoc($result))
-        {
-            if($row['buyItemId']==$drinkId[$i])
-            {
-                $flag=false;
-                // echo "same:".$drinkId[$i]."  ";
-            }
-            
-        }
-        if($flag)
-        {
-            // echo "加入購物車";
-            //將品項擺到購物車中
-            $buycarDB = <<<end
-            insert into shopCar
-            (buyCusId,buyItemId)
-            values
-            ($nowId,$drinkId[$i]);
-            end;
-            // echo $buycarDB;
-            mysqli_query($link,$buycarDB);
-        }
-        else
-        {
-            // echo "購物車已有";
-        }
-    }
-}
 
 
 ?>
@@ -94,13 +56,13 @@ for ($i = 0; $i < $totalItem; $i++) {
     <?php
     //檢測是不是還沒登入  非登入狀態則返回登入頁
     if ($_SESSION['nowMemberId'] == null) {
-        $_SESSION['linkTo']=1;
+        $_SESSION['linkTo'] = 1;
         header("location: login.php");
     }
     ?>
 
     <?php
-    require_once("header.php"); 
+    require_once("header.php");
     ?>
     <?php
     $remain = 0;
@@ -124,10 +86,48 @@ for ($i = 0; $i < $totalItem; $i++) {
         </div>
     <?php
     }
+    //將商品放到購物車 並且存到資料庫中
+    for ($i = 0; $i < $totalItem; $i++) {
+        //變數值
+        $temp = "btnBuy$i";
+        if (isset($_POST[$temp])) {
+            //確認無重複擺放品項
+            $flag = true;
+            $buysameDB = <<<end
+        select buyItemId from shopCar where buyCusId = $nowId;
+        end;
+            $result = mysqli_query($link, $buysameDB);
+            while ($row = mysqli_fetch_assoc($result)) {
+                if ($row['buyItemId'] == $drinkId[$i]) {
+                    $flag = false;
+                    // echo "same:".$drinkId[$i]."  ";
+                }
+            }
+            if ($flag) {
+                // echo "加入購物車";
+                //將品項擺到購物車中
+                $buycarDB = <<<end
+            insert into shopCar
+            (buyCusId,buyItemId)
+            values
+            ($nowId,$drinkId[$i]);
+            end;
+                // echo $buycarDB;
+                mysqli_query($link, $buycarDB);
+            } else {
+                ?>
+                <script>
+                    alert("此品項已在您的購物車");
+                </script>
+                <?php
+                // echo "購物車已有";
+            }
+        }
+    }
     ?>
 
     <?php
-    require_once("footer.php"); 
+    require_once("footer.php");
     ?>
 
     <script>

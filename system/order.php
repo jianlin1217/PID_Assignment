@@ -127,6 +127,7 @@
             mysqli_query($link,$finishOrder);
 
             //更改商品剩餘銷售出的數量
+
             //先找出哪些商品是被更改的以及更改數量
             $finditem=<<<end
             select itemId,itemCount from orderList as o JOIN orderDetail as od on od.orderId=o.orderId where o.orderId=$oid[$i];
