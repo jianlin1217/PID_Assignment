@@ -133,7 +133,6 @@ $_POST無法抓到值
 # 0908 V7.6 報表快速顯示 分為今日今週本月基準
 支出依照區間天數除掉計算
 
-<<<<<<< HEAD
 
 # 0909 優化
 購物車重複加入品項會提醒
@@ -143,7 +142,10 @@ $_POST無法抓到值
 購物車加入希望送達時間
 
 購物車可手動輸入值不用按按鈕也可以
-=======
+
+完成訂單有加入時間選擇  也可以取消該訂單
+
+
 # 圖片
 購物車
 ![image](https://github.com/jianlin1217/PID_Assignment/blob/master/img/localhost_8888_PID_Assignment_PID_Assignment_buycar.php.png)
@@ -151,7 +153,6 @@ $_POST無法抓到值
 ![image](https://github.com/jianlin1217/PID_Assignment/blob/master/img/localhost_8888_PID_Assignment_PID_Assignment_product.php.png)
 商品修改
 ![image](https://github.com/jianlin1217/PID_Assignment/blob/master/img/localhost_8888_PID_Assignment_PID_Assignment_system_products.php.png)
->>>>>>> f0f77234aa05dff1dede75c2a48416538d8d8275
 
 ### 待改進
 - [ ]訂單銷毀

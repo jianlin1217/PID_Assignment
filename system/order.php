@@ -28,7 +28,7 @@
         window.history.replaceState( null, null, window.location.href );
     }
     </script>
-    <div class="container" style="margin-top:130px">
+    <div  style="margin-top:130px;text-align:center;margin-left:50px;margin-right:50px;">
         <h1>訂單明細</h1>
         <button id="btnfin">顯示已完成訂單</button>
         <table class="table" style="width:100%;">
@@ -37,6 +37,7 @@
                     <th>訂單編號</th>
                     <th>顧客名稱</th>
                     <th>下訂時間</th>
+                    <th>希望時間</th>
                     <th>訂單負責人</th>
                     <th>是否完成</th> 
                     <th>完成日期</th>
@@ -46,7 +47,7 @@
             <?php
                 //訂單顯示  若是已經完成則隱藏起來
                 $askOrder=<<<end
-                select orderId,total,orderCusId,orderDate,orderManageId,finishYN,finishDate from orderList;
+                select orderId,total,orderCusId,orderDate,orderManageId,finishYN,finishDate,hopedate from orderList;
                 end;
                 $result=mysqli_query($link,$askOrder);
                 //存放訂單編號
@@ -65,12 +66,50 @@
                     <td><?php echo $row['orderId']; array_push($oid,$row['orderId']);?></td>
                     <td><?=$row2['customerName']?></td>
                     <td><?=$row['orderDate']?></td>
+                    <td><?=$row['hopedate']?></td>
+                    <form action="" method="post">
                     <td>
-                        <select name="whoManage" id="whoManage">
+                    
+                        
                             <?php
-                                
+                                if($row['finishYN']=='N')
+                                {
+                                    //找出所有員工
+                                    $getmember=<<<end
+                                    select memberName,memberId from memberList where memberYN="Y"
+                                    end;
+                                    $result3=mysqli_query($link,$getmember);
+                                    ?>
+                                    <select name="whoManage" id="whoManage">
+                                    <option value="none">請選擇負責人</option>
+                                    <?php
+                                    while($row3=mysqli_fetch_assoc($result3))
+                                    {
+                                        ?>
+                                        <option value="<?=$row3['memberId']?>"><?=$row3['memberName']?></option>
+                                        <?php
+                                    }
+                                ?>
+                                    </select>
+                                <?php
+                                }
+                                else 
+                                {
+                                    $noid=$row['orderId'];
+                                    $getmember=<<<end
+                                    select memberName,memberId
+                                    from memberList as m JOIN orderList as o on o.orderManageId=m.memberId 
+                                    where memberYN="Y" and o.finishYN="Y" and orderId=$noid
+                                    end;
+                                    $result3=mysqli_query($link,$getmember);
+                                    $row3=mysqli_fetch_assoc($result3);
+                                    ?>
+                                        <p value="<?=$row3['memberId']?>"><?=$row3['memberName']?></p>
+                                    <?php
+                                }
+                            
                             ?>
-                        </select>
+                        
                     </td>
                     <td id="YN<?=$countorder?>" value="<?=$row['finishYN']?>">
                         <?php
@@ -89,10 +128,11 @@
                         if($row['finishDate']==NULL)
                         {
                         ?>
-                        <form action="" method="post">
+                        
+                            <input type="datetime-local" name="fdate" id="fdate" >
                             <button  id="finish<?=$countorder?>" name="finish<?=$countorder?>">完成</button>
-
-                        </form>
+                            <button id="cancel<?=$countorder?>" name="cancel<?=$countorder?>">取消</button>
+                        
                         <?php
 
                         }
@@ -102,6 +142,7 @@
                         }
                         ?>
                     </td>
+                </form>
                 </tr>
             <?php
                 $countorder++;
@@ -117,11 +158,21 @@
         // echo "finish".$i."*";
         if(isset($_POST['finish'.$i]))
         {
+
             // echo $_POST['finish'.$i];
-            date_default_timezone_set("Asia/Taipei");
-            $now=date("Y-m-d H:i:s");
+            $mana=$_POST['whoManage'];
+            if($_POST['fdate']!=NULL)
+            {
+                $now=$_POST['fdate'];
+            }
+            else
+            {
+                date_default_timezone_set("Asia/Taipei");
+                $now=date("Y-m-d H:i:s");
+            }
+            
             $finishOrder=<<<end
-            update orderList set finishDate = "$now",finishYN="Y" where orderId=$oid[$i];
+            update orderList set finishDate = "$now",finishYN="Y",orderManageId=$mana where orderId=$oid[$i];
             end;
             // echo $finishOrder;
             mysqli_query($link,$finishOrder);

@@ -167,11 +167,6 @@ for ($i = 0; $i < $totalItem; $i++) {
             //訂單總額 希望時間
             $orderTotal = $_POST['btotal'];
             $hopetime=str_replace("T"," ",$_POST['hopedate']) ;
-            ?>
-            <script>
-                alert("<?=$hopetime?>");
-            </script>
-            <?php
             //取得商品價格
             for ($o = 0; $o < count($orderIcount); $o++) {
                 $getPrice = <<<end
