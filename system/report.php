@@ -99,7 +99,7 @@ require_once("connectDB.php");
                         $getreport = <<<end
                         select DISTINCT i.itemName,remainCount,saleOut,itemState,sum(od.itemCount) 
                         from itemList as i JOIN orderList as o JOIN orderDetail as od on i.itemName=od.itemName and od.orderId=o.orderId 
-                        where o.orderDate between "$stime" and "$etime" 
+                        where o.finishDate between "$stime" and "$etime" 
                         GROUP BY i.itemName,remainCount,saleOut,itemState
                         end;
                         ?>
